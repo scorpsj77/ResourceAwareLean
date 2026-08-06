@@ -1,0 +1,40 @@
+name = "ResourceAware"
+version = "0.1.0"
+defaultTargets = ["ResourceAware", "TextbookAlgorithms"]
+
+[leanOptions]
+weak.linter.mathlibStandardSet = true
+weak.linter.flexible = true
+# The next three linters are provided by Mathlib, but don't work here.
+# This should be fixed, see discussion at https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/weak.2Elinter.2EmathlibStandardSet.20and.20lint-style-action/with/544726745
+weak.linter.pythonStyle = false
+weak.linter.checkInitImports = false
+weak.linter.allScriptsDocumented = false
+# this is currently not extensible for unicode not used in Mathlib
+weak.linter.unicodeLinter = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "d52d26fc2f36d4af5215e91892b33c96dc33915a"
+
+[[require]]
+name = "cslib"
+git = "https://github.com/leanprover/cslib"
+rev = "f2aeae553b9356d3aed003cacd7e3061d9ad0bd3"
+
+[[lean_lib]]
+name = "ResourceAware"
+
+[[lean_lib]]
+name = "TextbookAlgorithms"
+
+[[lean_lib]]
+name = "ThirdParty"
+
+[[lean_lib]]
+name = "Examples"
+# Examples exist to be run: `#eval` and `#guard` are the point, and these files
+# are not Mathlib-bound, so the Mathlib style linters for headers and
+# `#`-commands do not apply.
+leanOptions = {weak.linter.style.header = false, weak.linter.hashCommand = false}

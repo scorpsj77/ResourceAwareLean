@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "ResourceAware"
+version: 0.1.0-alpha
+license: Apache-2.0
+type: software
+abstract: >-
+  Resource-aware textbook algorithms in Lean 4: algorithms written once as
+  free programs over an operation signature, interpreted under independently
+  varying semantic and cost models, with proved model-independence, ordered
+  operation traces, and asymptotic bounds.
+authors:
+  - name: "Jiyuan" # TODO: confirm full name (as recorded in git history)
+  - name: "Daya Kumaran" # TODO: confirm full name (as recorded in git history)
+  - name: "dkmrn" # TODO: confirm full name (GitHub username in git history)

@@ -1,0 +1,21 @@
+{
+	"lean4.input.customTranslations": {
+		"nil": "𝟎",
+		"com": "⮕",
+		"seqcomp": "⨟",
+		"eppl": "⟦",
+		"eppr": "⟧",
+		"merge": "⊔",
+		"moreBranches": "⊒",
+		"par": "‖",
+		"tr": "⭢",
+		"mtr": "↠",
+		"red": "⭢",
+		"mred": "↠",
+		"_?": "ʔ",
+		"dual": "⫠"
+	},
+	"editor.rulers": [
+		100
+	]
+}

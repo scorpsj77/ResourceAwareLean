@@ -1,0 +1,17 @@
+/.lake
+/docs/doc-data
+/docs/doc
+/docs/Init-manifest.json
+/docs/Init-manifest.json.hash
+/docs/Init-manifest.json.trace
+/docs/Lake-manifest.json
+/docs/Lake-manifest.json.hash
+/docs/Lake-manifest.json.trace
+/docs/Lean-manifest.json
+/docs/Lean-manifest.json.hash
+/docs/Lean-manifest.json.trace
+/docs/Std-manifest.json
+/docs/Std-manifest.json.hash
+/docs/Std-manifest.json.trace
+.DS_Store
+.claude

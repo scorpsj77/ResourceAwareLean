@@ -1,0 +1,16 @@
+ResourceAware
+Copyright 2026 the ResourceAware authors
+
+Licensed under the Apache License, Version 2.0.
+
+This package depends on and was developed against CSLib
+(https://github.com/leanprover/cslib), Copyright the CSLib authors,
+licensed under the Apache License, Version 2.0. The package was
+originally developed inside a fork of CSLib and now consumes CSLib as a
+pinned Lake dependency.
+
+The file ThirdParty/Graph.lean is a local copy of the graph API proposed
+in CSLib pull request #503, authored by Basil Rohner, Sorrachai
+Yingchareonthawornchai, and Weixuan Yuan, licensed under the Apache
+License, Version 2.0. It is not authored by this project and is retained
+unmodified until that pull request merges upstream.

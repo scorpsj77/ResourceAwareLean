@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResourceAware — resource-aware algorithm verification in Lean 4</title>
+<meta name="description" content="A Lean 4 framework for resource-aware algorithm verification: write an algorithm once, interpret it under independently varying semantic and cost models, and prove the models do not disturb each other.">
+<style>
+  :root {
+    --bg: #fdfdfc;
+    --fg: #1e2126;
+    --muted: #5b6472;
+    --accent: #1f6f54;
+    --accent-soft: #e8f2ee;
+    --border: #e3e5e8;
+    --code-bg: #f4f5f6;
+    --card-bg: #ffffff;
+    --warn: #9a6700;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b;
+      --fg: #e6e8eb;
+      --muted: #9aa4b1;
+      --accent: #58b893;
+      --accent-soft: #1c2b26;
+      --border: #2a2f36;
+      --code-bg: #1c2026;
+      --card-bg: #191d22;
+      --warn: #d4a72c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    font-size: 16.5px;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header.hero { padding: 4.5rem 0 2.5rem; border-bottom: 1px solid var(--border); }
+  .hero h1 {
+    margin: 0 0 0.4rem;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 .aware { color: var(--accent); }
+  .hero p.tag {
+    margin: 0 0 1.4rem;
+    font-size: 1.22rem;
+    color: var(--muted);
+    max-width: 40rem;
+  }
+  .hero p.tag strong { color: var(--fg); font-weight: 600; }
+  .links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .links a {
+    display: inline-block;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: var(--fg);
+  }
+  .links a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .links a.primary:hover { text-decoration: none; opacity: 0.92; }
+  .links a:hover { text-decoration: none; border-color: var(--accent); }
+
+  h2 {
+    margin: 2.8rem 0 0.8rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+  }
+  h2 small { font-weight: 400; color: var(--muted); font-size: 0.95rem; margin-left: 0.5rem; }
+  p { margin: 0.7rem 0; }
+  .muted { color: var(--muted); }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  code {
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  .cm { color: var(--muted); }
+  .kw { color: var(--accent); font-weight: 600; }
+
+  .pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 1.3rem 0;
+    font-size: 0.92rem;
+  }
+  .pipeline .stage {
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    white-space: nowrap;
+  }
+  .pipeline .arrow { color: var(--muted); }
+
+  ul.features { padding-left: 1.2rem; margin: 0.8rem 0; }
+  ul.features li { margin: 0.45rem 0; }
+  ul.features li strong { font-weight: 600; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+    margin: 1rem 0;
+  }
+  .table-wrap { overflow-x: auto; }
+  th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-weight: 600; }
+  td.st { white-space: nowrap; font-weight: 600; }
+  .ok { color: var(--accent); }
+  .partial { color: var(--warn); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+  }
+  .card h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+  .card p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <h1>Resource<span class="aware">Aware</span></h1>
+  <p class="tag">
+    A Lean&nbsp;4 framework for verified algorithm analysis.
+    <strong>Write the algorithm once.</strong> Interpret it under independently
+    varying semantic and cost models — and <strong>prove the models do not
+    disturb each other</strong>.
+  </p>
+  <div class="links">
+    <!-- TODO before publishing: replace # with the real GitHub repository URL -->
+    <a class="primary" href="#">GitHub</a>
+    <!-- TODO before publishing: enable once doc-gen4 CI deploys API docs -->
+    <a href="#">API documentation</a>
+    <a href="#status">Status</a>
+    <a href="#start">Get started</a>
+  </div>
+</header>
+
+<h2>The idea</h2>
+<p>
+  An algorithm is a <em>free program</em> over an abstract operation signature:
+  it fixes control flow and the operations it requests, and nothing else.
+  Execution semantics and resource measurement are supplied separately, as two
+  independent structures, and one generic interpreter runs every algorithm.
+</p>
+<div class="pipeline">
+  <span class="stage">free program</span><span class="arrow">→</span>
+  <span class="stage">semantics</span><span class="arrow">→</span>
+  <span class="stage">measured trace</span><span class="arrow">→</span>
+  <span class="stage">operation profile</span><span class="arrow">→</span>
+  <span class="stage">exact cost</span><span class="arrow">→</span>
+  <span class="stage">IsBigO bound</span>
+</div>
+<p>
+  Because a cost model is a separate value, changing it is a theorem-backed
+  no-op on behaviour: <code>mapEvents_runFrom_eq</code> proves that swapping
+  the cost model preserves the returned value, the final state, and the erased
+  operation trace. And because runs produce <em>ordered traces</em> rather than
+  a single accumulated number, one execution answers many cost questions —
+  erase the measurements, keep the operation profile, and reweight it under any
+  charge function.
+</p>
+
+<h2>One algorithm, two cost models</h2>
+<p class="muted">From the executable examples — MergeSort interpreted twice, same trace, different measurements:</p>
+<pre><code><span class="kw">def</span> comparisonRun := interpret (CostModel.comparisonOnly) (mergeSort [4, 1, 3, 2])
+<span class="kw">def</span> kleinbergRun  := interpret (CostModel.kleinberg 1 listStructuralBackend) (mergeSort [4, 1, 3, 2])
+
+#guard comparisonRun.ret.1 == [1, 2, 3, 4]   <span class="cm">-- same sorted result</span>
+#guard exactCost comparisonRun == 5          <span class="cm">-- five key comparisons</span>
+#guard exactCost kleinbergRun  == 13         <span class="cm">-- split 4 + merge 4 + comparisons 5</span></code></pre>
+<p>
+  The same pattern runs BFS and DFS under adjacency-list and adjacency-matrix
+  resource models: identical program, identical traversal,
+  representation-sensitive costs (<code>32</code> vs <code>44</code> for the
+  worked BFS example).
+</p>
+
+<h2>What is proved <small>and what is not, yet</small></h2>
+<p>
+  All libraries build with no <code>sorry</code> and depend only on the three
+  standard axioms (<code>propext</code>, <code>Classical.choice</code>,
+  <code>Quot.sound</code>). The examples are executed and checked at build time.
+</p>
+<div class="table-wrap" id="status">
+<table>
+  <tr><th>Claim</th><th>Status</th></tr>
+  <tr>
+    <td>Semantics/cost separation with a proved independence theorem</td>
+    <td class="st ok">✓ proved</td>
+  </tr>
+  <tr>
+    <td>Ordered traces, measurement erasure, and profile reweighting as reusable proof objects</td>
+    <td class="st ok">✓ proved</td>
+  </tr>
+  <tr>
+    <td>BFS and DFS: execution-linked reachability, with representation-sensitive cost models</td>
+    <td class="st ok">✓ proved</td>
+  </tr>
+  <tr>
+    <td>Exact modeled costs carried to Mathlib <code>IsBigO</code> bounds (MergeSort bound stated on powers of two)</td>
+    <td class="st ok">✓ proved</td>
+  </tr>
+  <tr>
+    <td>Executable BFS / DFS / MergeSort demonstrations that actually run</td>
+    <td class="st ok">✓ working</td>
+  </tr>
+  <tr>
+    <td>BFS concrete output-tree ↔ shortest-path-tree connection</td>
+    <td class="st partial">△ open</td>
+  </tr>
+  <tr>
+    <td>DFS execution ↔ recursive-tree certificate</td>
+    <td class="st partial">△ conditional</td>
+  </tr>
+  <tr>
+    <td>Randomized cost framework (<code>RandCostM</code>, expected-cost reasoning)</td>
+    <td class="st partial">△ experimental branch, under review</td>
+  </tr>
+</table>
+</div>
+
+<h2>Libraries</h2>
+<div class="cols">
+  <div class="card">
+    <h3>ResourceAware</h3>
+    <p>The framework: free programs, semantics and cost-model records, the
+    generic interpreter, ordered traces, erasure and reweighting, and the graph
+    interface with resource models.</p>
+  </div>
+  <div class="card">
+    <h3>TextbookAlgorithms</h3>
+    <p>Case studies from Kleinberg–Tardos: BFS and DFS (Chapter&nbsp;3),
+    MergeSort (Chapter&nbsp;5) — correctness and complexity, per algorithm.</p>
+  </div>
+  <div class="card">
+    <h3>Examples</h3>
+    <p>Executable demonstrations. Every number above comes from a
+    <code>#eval</code> or <code>#guard</code> you can run yourself.</p>
+  </div>
+  <div class="card">
+    <h3>ThirdParty</h3>
+    <p>A clearly marked local copy of the experimental graph API from CSLib
+    PR&nbsp;#503, kept until it merges upstream.</p>
+  </div>
+</div>
+
+<h2 id="start">Get started</h2>
+<pre><code>git clone &lt;repository-url&gt;   <span class="cm"># TODO: real URL at publish time</span>
+cd ResourceAware
+lake build
+lake env lean Examples/BFS.lean      <span class="cm"># levels, tree edges, costs under two models</span>
+lake env lean Examples/MergeSort.lean</code></pre>
+
+<h2>Relationship to CSLib and AlgoLean</h2>
+<p>
+  ResourceAware is an independent package built on
+  <a href="https://github.com/leanprover/cslib">CSLib</a> (pinned dependency;
+  the free-monad and <code>TimeM</code> foundations are CSLib's, used with
+  gratitude). <a href="https://github.com/Shreyas4991/Algolean">AlgoLean</a> is
+  the closest related project — a free-monad algorithms-and-complexity library
+  on the same CSLib foundations. The designs are complementary: AlgoLean spans
+  many computational models with a single model record per query type;
+  ResourceAware separates semantics from cost as independent structures, keeps
+  ordered traces, and focuses on deep textbook case studies. Selected reusable
+  components here are candidates for focused upstream CSLib contributions.
+</p>
+
+<footer>
+  <p>
+    Apache 2.0 · built on <a href="https://github.com/leanprover/cslib">CSLib</a>
+    and <a href="https://github.com/leanprover-community/mathlib4">Mathlib</a> ·
+    a student research project
+    <!-- TODO before publishing: add author names (see CITATION.cff) and institution -->
+  </p>
+</footer>
+
+</main>
+</body>
+</html>
