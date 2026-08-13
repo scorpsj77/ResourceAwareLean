@@ -107,7 +107,9 @@ upstream contributions.
 - The MergeSort asymptotic bound is stated on inputs whose length is a power
   of two.
 
-## Related work: AlgoLean
+## Related work
+
+### AlgoLean
 
 [AlgoLean](https://github.com/Shreyas4991/Algolean) is a standalone Lean
 package for algorithm complexity built on the same CSLib foundations, and is a
