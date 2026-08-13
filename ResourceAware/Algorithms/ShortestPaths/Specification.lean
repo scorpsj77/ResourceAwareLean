@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 Dayakumaran Ramalingam. All rights reserved.
+Copyright (c) 2026 Daya Kumaran. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Dayakumaran Ramalingam
+Authors: Daya Kumaran
 -/
 import ResourceAware.Foundations.Graph.Interface
 import Mathlib.Combinatorics.Quiver.Path.Weight
