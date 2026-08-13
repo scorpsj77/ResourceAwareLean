@@ -37,7 +37,7 @@ Libraries:
 | Library | Contents |
 | --- | --- |
 | `ResourceAware` | The framework: free programs, semantics/cost records, generic interpreter, traces, erasure, reweighting, graph interface and resource models |
-| `TextbookAlgorithms` | Kleinberg–Tardos case studies: BFS and DFS (Chapter 3), Dijkstra (Chapter 4), MergeSort (Chapter 5), and randomized Quicksort (Chapter 13) |
+| `TextbookAlgorithms` | Kleinberg–Tardos case studies: BFS and DFS (Chapter 3), Dijkstra (Chapter 4), mergesort (Chapter 5), and randomized quicksort (Chapter 13) |
 | `ThirdParty` | Local copy of the graph API from CSLib PR #503 (not authored by this project; see `ThirdParty/README.md`) |
 | `Examples` | Executable demonstrations for BFS, DFS, Dijkstra, MergeSort, randomized Quicksort, and their reusable infrastructure |
 
@@ -104,8 +104,7 @@ upstream contributions.
   reachability. The Kleinberg–Tardos ancestor theorem is proved from an
   abstract recursive-tree certificate structure that the executable DFS does
   not currently construct. -->
-- The MergeSort asymptotic bound is stated on inputs whose length is a power
-  of two.
+- The MergeSort asymptotic bound is stated for inputs whose length is a power of two, following the implementation and assumptions in Kleinberg and Tardos’s textbook.
 
 ## Related work
 

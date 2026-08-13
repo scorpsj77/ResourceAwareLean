@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "ResourceAware"
+title: "ResourceAwareLean"
 version: 0.1.0-alpha
 license: Apache-2.0
 type: software
@@ -12,4 +12,5 @@ abstract: >-
 authors:
   - name: "Jiyuan" # TODO: confirm full name (as recorded in git history)
   - name: "Daya Kumaran" # TODO: confirm full name (as recorded in git history)
-  - name: "dkmrn" # TODO: confirm full name (GitHub username in git history)
+  - name: "James Needham" # TODO: confirm full name (GitHub username in git history)
+  - name: "Lechen Wang"

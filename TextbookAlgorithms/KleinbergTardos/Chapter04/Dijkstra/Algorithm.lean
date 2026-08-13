@@ -5,7 +5,6 @@ Authors: Dayakumaran Ramalingam
 -/
 import Batteries.Data.Array.Lemmas
 import Mathlib.Algebra.Order.AddGroupWithTop
-import ResourceAware.Foundations.Graph.ResourceModel
 import ResourceAware.Foundations.PriorityQueue.Algorithm
 import ResourceAware.Program.Model
 
