@@ -1,4 +1,4 @@
-# ResourceAware
+# ResourceAwareLean
 
 ResourceAwareLean supports the flexible analysis of algorithms under different
 cost models. Algorithms are written as free programs over abstract operation
