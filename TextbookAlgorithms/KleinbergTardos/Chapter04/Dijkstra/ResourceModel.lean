@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Dayakumaran Ramalingam
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter04.Dijkstra.Algorithm
+import ResourceAware.Foundations.Graph.ResourceModel
 import ResourceAware.Foundations.PriorityQueue.ResourceModel
 import ResourceAware.Program.Cost
 
