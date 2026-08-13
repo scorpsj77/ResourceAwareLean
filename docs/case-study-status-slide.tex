@@ -1,0 +1,72 @@
+% ---------- Minimal case-study status slide ----------
+% Paste this frame into your Case Studies or Conclusion section.
+% Assumes: beamer, xcolor, booktabs, colortbl, amsmath, amssymb.
+
+\begin{frame}[t]{Kleinberg--Tardos Case Studies}
+\vspace{0.15em}
+\scriptsize
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+
+\begin{tabular}{p{0.14\linewidth}p{0.30\linewidth}p{0.30\linewidth}p{0.16\linewidth}}
+\toprule
+\textbf{Case} & \textbf{Correctness target} & \textbf{Cost target} & \textbf{Status note} \\
+\midrule
+
+\rowcolor{uclablue!5}
+\textbf{BFS}
+& Reachability; shortest-path tree; Thm.~3.15 bipartite / odd cycle
+& Thm.~3.11: \(O(m+n)\) list; \(O(n^2)\) matrix
+& \textbf{Open link:} run output \(\to\) certificate \\
+
+\rowcolor{leangreen!6}
+\textbf{DFS}
+& Reachability; Thm.~3.7 ancestor property
+& Thm.~3.13: \(O(m+n)\) list; \(O(n^2)\) matrix
+& \textbf{Open link:} run output \(\to\) certificate \\
+
+\rowcolor{reviewgold!10}
+\textbf{Mergesort}
+& Sorted permutation
+& Thm.~5.1 recurrence; Thm.~5.2 \(O(n\log n)\)
+& \textbf{Complete} in textbook's \(n=2^k\) convention \\
+
+\rowcolor{uclablue!5}
+\textbf{Dijkstra}
+& Claim~4.14 shortest paths
+& Claim~4.15 \(O(m\log n)\)
+& \textbf{Complete} under textbook reachability assumption \\
+
+\rowcolor{leangreen!6}
+\textbf{Rand. quicksort}
+& Sorted permutation
+& Sec.~13.5 expected \(O(n\log n)\); worst \(\Theta(n^2)\)
+& \textbf{Complete} under textbook distinct-key assumption \\
+
+\bottomrule
+\end{tabular}
+
+\vspace{0.35em}
+{\tiny
+\textit{Scope.} Arbitrary-size Mergesort is an optional strengthening of the textbook's
+simplified recurrence. Disconnected Dijkstra inputs and duplicate-key quicksort are
+beyond-textbook extensions.
+}
+
+\vspace{0.45em}
+
+\begin{block}{Progress in numbers}
+\centering
+\small
+\textbf{5/5} case studies build
+\(\;\boldsymbol{\cdot}\;\)
+\textbf{426} case-study theorem/lemma declarations
+\(\;\boldsymbol{\cdot}\;\)
+\textbf{0} \texttt{sorry}, \texttt{admit}, or local \texttt{axiom} declarations
+
+\vspace{0.2em}
+\scriptsize
+\textbf{21 Lean files} connect functional correctness with exact, representation-sensitive,
+and expected-cost bounds in one resource-aware framework.
+\end{block}
+\end{frame}
