@@ -3,31 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ResourceAware — resource-aware algorithm verification in Lean 4</title>
+<title>ResourceAwareLean — resource-aware algorithm formalization in Lean 4</title>
 <meta name="description" content="A Lean 4 framework for resource-aware algorithm verification: write an algorithm once, interpret it under independently varying semantic and cost models, and prove the models do not disturb each other.">
 <style>
   :root {
     --bg: #fdfdfc;
     --fg: #1e2126;
     --muted: #5b6472;
-    --accent: #1f6f54;
-    --accent-soft: #e8f2ee;
+    --accent: #2774ae;
+    --accent-soft: #daebfe;
     --border: #e3e5e8;
     --code-bg: #f4f5f6;
     --card-bg: #ffffff;
-    --warn: #9a6700;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #14171b;
       --fg: #e6e8eb;
       --muted: #9aa4b1;
-      --accent: #58b893;
-      --accent-soft: #1c2b26;
+      --accent: #8bb8e8;
+      --accent-soft: #003b5c;
       --border: #2a2f36;
       --code-bg: #1c2026;
       --card-bg: #191d22;
-      --warn: #d4a72c;
     }
   }
   * { box-sizing: border-box; }
@@ -51,6 +49,7 @@
     letter-spacing: -0.02em;
   }
   .hero h1 .aware { color: var(--accent); }
+  .hero h1 .lean { color: #fff; }
   .hero p.tag {
     margin: 0 0 1.4rem;
     font-size: 1.22rem;
@@ -76,7 +75,6 @@
     font-size: 1.35rem;
     letter-spacing: -0.01em;
   }
-  h2 small { font-weight: 400; color: var(--muted); font-size: 0.95rem; margin-left: 0.5rem; }
   p { margin: 0.7rem 0; }
   .muted { color: var(--muted); }
 
@@ -121,19 +119,6 @@
   ul.features li { margin: 0.45rem 0; }
   ul.features li strong { font-weight: 600; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.93rem;
-    margin: 1rem 0;
-  }
-  .table-wrap { overflow-x: auto; }
-  th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th { font-weight: 600; }
-  td.st { white-space: nowrap; font-weight: 600; }
-  .ok { color: var(--accent); }
-  .partial { color: var(--warn); }
-
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
   @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
   .card {
@@ -144,6 +129,10 @@
   }
   .card h3 { margin: 0 0 0.4rem; font-size: 1rem; }
   .card p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+  .cols .span-two { grid-column: 1 / -1; }
+  .example { margin: 1rem 0; }
+  .example h3 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+  .example p { margin: 0.45rem 0 0; }
 
   footer {
     margin-top: 3.5rem;
@@ -158,158 +147,153 @@
 <main>
 
 <header class="hero">
-  <h1>Resource<span class="aware">Aware</span></h1>
+  <h1>Resource<span class="aware">Aware</span><span class="lean">Lean</span></h1>
   <p class="tag">
-    A Lean&nbsp;4 framework for verified algorithm analysis.
-    <strong>Write the algorithm once.</strong> Interpret it under independently
-    varying semantic and cost models — and <strong>prove the models do not
-    disturb each other</strong>.
+    ResourceAwareLean is a Lean&nbsp;4 framework for implementing algorithms
+    abstractly and reusing their complexity analyses across different cost
+    models. 
+    <!-- Each model is defined by the costs it assigns to individual operations. -->
   </p>
   <div class="links">
-    <!-- TODO before publishing: replace # with the real GitHub repository URL -->
-    <a class="primary" href="#">GitHub</a>
-    <!-- TODO before publishing: enable once doc-gen4 CI deploys API docs -->
-    <a href="#">API documentation</a>
-    <a href="#status">Status</a>
-    <a href="#start">Get started</a>
+    <a class="primary" href="https://github.com/dkmrn/Resource-Aware-CSLib">GitHub</a>
+    <a href="#examples">Examples</a>
+    <a href="#start">Get Started</a>
   </div>
 </header>
 
-<h2>The idea</h2>
+<h2>The Idea</h2>
 <p>
-  An algorithm is a <em>free program</em> over an abstract operation signature:
-  it fixes control flow and the operations it requests, and nothing else.
-  Execution semantics and resource measurement are supplied separately, as two
-  independent structures, and one generic interpreter runs every algorithm.
+  An algorithm is written as a sequence of abstract operations. Its control flow
+  does not depend on a particular data structure or cost formula. A semantic
+  model decides what each operation does, while a cost model independently
+  assigns a cost to that operation. The assigned cost may depend on the
+  operation, its inputs, and the state before or after it runs.
 </p>
 <div class="pipeline">
-  <span class="stage">free program</span><span class="arrow">→</span>
-  <span class="stage">semantics</span><span class="arrow">→</span>
+  <span class="stage">algorithm</span><span class="arrow">→</span>
+  <span class="stage">operation semantics</span><span class="arrow">→</span>
+  <span class="stage">operation costs</span><span class="arrow">→</span>
   <span class="stage">measured trace</span><span class="arrow">→</span>
-  <span class="stage">operation profile</span><span class="arrow">→</span>
-  <span class="stage">exact cost</span><span class="arrow">→</span>
-  <span class="stage">IsBigO bound</span>
+  <span class="stage">resource analysis</span><span class="arrow">→</span>
+  <span class="stage">complexity bound</span>
 </div>
 <p>
-  Because a cost model is a separate value, changing it is a theorem-backed
-  no-op on behaviour: <code>mapEvents_runFrom_eq</code> proves that swapping
-  the cost model preserves the returned value, the final state, and the erased
-  operation trace. And because runs produce <em>ordered traces</em> rather than
-  a single accumulated number, one execution answers many cost questions —
-  erase the measurements, keep the operation profile, and reweight it under any
-  charge function.
+  A generic interpreter combines these choices and records the operations in
+  execution order. The framework proves that changing only the cost model does
+  not change the algorithm's result, final state, or sequence of operations.
+  The recorded trace can then be evaluated under another set of operation costs
+  without rewriting the algorithm or repeating its correctness proof.
 </p>
 
-<h2>One algorithm, two cost models</h2>
-<p class="muted">From the executable examples — MergeSort interpreted twice, same trace, different measurements:</p>
-<pre><code><span class="kw">def</span> comparisonRun := interpret (CostModel.comparisonOnly) (mergeSort [4, 1, 3, 2])
-<span class="kw">def</span> kleinbergRun  := interpret (CostModel.kleinberg 1 listStructuralBackend) (mergeSort [4, 1, 3, 2])
+<h2 id="examples">Examples</h2>
 
-#guard comparisonRun.ret.1 == [1, 2, 3, 4]   <span class="cm">-- same sorted result</span>
-#guard exactCost comparisonRun == 5          <span class="cm">-- five key comparisons</span>
-#guard exactCost kleinbergRun  == 13         <span class="cm">-- split 4 + merge 4 + comparisons 5</span></code></pre>
+<div class="card example">
+<h3>1. Different cost models — Mergesort</h3>
 <p>
-  The same pattern runs BFS and DFS under adjacency-list and adjacency-matrix
-  resource models: identical program, identical traversal,
-  representation-sensitive costs (<code>32</code> vs <code>44</code> for the
-  worked BFS example).
+  <strong>Problem.</strong> A complexity analysis depends on what work the model
+  counts. For mergesort, one model may count only key comparisons, while another
+  also accounts for splitting and merging. Baking either choice into the
+  implementation makes the algorithm difficult to reuse.
 </p>
-
-<h2>What is proved <small>and what is not, yet</small></h2>
 <p>
-  All libraries build with no <code>sorry</code> and depend only on the three
-  standard axioms (<code>propext</code>, <code>Classical.choice</code>,
-  <code>Quot.sound</code>). The examples are executed and checked at build time.
+  <strong>Our approach.</strong> Mergesort requests abstract comparison, split,
+  merge, and base-case operations. Each cost model assigns costs to those
+  operations independently, so the algorithm and its correctness proof are
+  reused across different accounting choices.
 </p>
-<div class="table-wrap" id="status">
-<table>
-  <tr><th>Claim</th><th>Status</th></tr>
-  <tr>
-    <td>Semantics/cost separation with a proved independence theorem</td>
-    <td class="st ok">✓ proved</td>
-  </tr>
-  <tr>
-    <td>Ordered traces, measurement erasure, and profile reweighting as reusable proof objects</td>
-    <td class="st ok">✓ proved</td>
-  </tr>
-  <tr>
-    <td>BFS and DFS: execution-linked reachability, with representation-sensitive cost models</td>
-    <td class="st ok">✓ proved</td>
-  </tr>
-  <tr>
-    <td>Exact modeled costs carried to Mathlib <code>IsBigO</code> bounds (MergeSort bound stated on powers of two)</td>
-    <td class="st ok">✓ proved</td>
-  </tr>
-  <tr>
-    <td>Executable BFS / DFS / MergeSort demonstrations that actually run</td>
-    <td class="st ok">✓ working</td>
-  </tr>
-  <tr>
-    <td>BFS concrete output-tree ↔ shortest-path-tree connection</td>
-    <td class="st partial">△ open</td>
-  </tr>
-  <tr>
-    <td>DFS execution ↔ recursive-tree certificate</td>
-    <td class="st partial">△ conditional</td>
-  </tr>
-  <tr>
-    <td>Randomized cost framework (<code>RandCostM</code>, expected-cost reasoning)</td>
-    <td class="st partial">△ experimental branch, under review</td>
-  </tr>
-</table>
 </div>
 
-<h2>Libraries</h2>
+<div class="card example">
+<h3>2. Different data structures — BFS, DFS, and Dijkstra</h3>
+<p>
+  <strong>Problem.</strong> The resource use of a graph algorithm depends on its
+  representation. Neighbor lookup differs between adjacency lists and matrices,
+  and Dijkstra also depends on the chosen priority queue. Hard-coding these data
+  structures ties the algorithm and its proof to one implementation.
+</p>
+<p>
+  <strong>Our approach.</strong> BFS, DFS, and Dijkstra are written against abstract
+  graph and priority-queue interfaces. Concrete data structures provide their
+  semantics and operation costs separately, allowing the same algorithms and
+  correctness results to be analyzed under different representations.
+</p>
+</div>
+
+<div class="card example">
+<h3>3. Randomized algorithms — Randomized quicksort</h3>
+<p>
+  <strong>Problem.</strong> A randomized algorithm can follow many execution paths,
+  each with its own result and resource use. A single deterministic counter
+  cannot capture the branch probabilities and their costs.
+</p>
+<p>
+  <strong>Our approach.</strong> Randomized quicksort requests pivot choices as
+  abstract operations. A probabilistic interpreter supplies those choices, and
+  <code>RandCostM</code> keeps their results and costs together. The case study
+  proves sorted-permutation correctness and expected-cost bounds without defining
+  a second quicksort implementation for randomized execution.
+</p>
+</div>
+
+<h2>What's Included</h2>
 <div class="cols">
   <div class="card">
-    <h3>ResourceAware</h3>
-    <p>The framework: free programs, semantics and cost-model records, the
-    generic interpreter, ordered traces, erasure and reweighting, and the graph
-    interface with resource models.</p>
+    <h3>ResourceAwareLean</h3>
+    <p>ResourceAwareLean expresses algorithms as free programs and interprets
+    their behavior and resource use through separate semantic and cost models.
+    It also provides ordered traces, probabilistic cost semantics, and reusable
+    interfaces for graphs and priority queues.</p>
   </div>
   <div class="card">
     <h3>TextbookAlgorithms</h3>
-    <p>Case studies from Kleinberg–Tardos: BFS and DFS (Chapter&nbsp;3),
-    MergeSort (Chapter&nbsp;5) — correctness and complexity, per algorithm.</p>
+    <p>Case studies from Kleinberg and Tardos's <em>Algorithm Design</em>: BFS and
+    DFS (Chapter&nbsp;3), Dijkstra (Chapter&nbsp;4), Mergesort (Chapter&nbsp;5),
+    and Randomized quicksort (Chapter&nbsp;13).</p>
   </div>
-  <div class="card">
-    <h3>Examples</h3>
-    <p>Executable demonstrations. Every number above comes from a
-    <code>#eval</code> or <code>#guard</code> you can run yourself.</p>
+  <div class="card span-two">
+    <h3>RandCostM</h3>
+    <p>RandCostM models randomized computations as distributions over result-cost
+    pairs. It describes the Lean implementation of probabilistic choice,
+    branchwise cost accumulation, and expected-cost reasoning.</p>
   </div>
-  <div class="card">
+  <!-- <div class="card">
     <h3>ThirdParty</h3>
     <p>A clearly marked local copy of the experimental graph API from CSLib
     PR&nbsp;#503, kept until it merges upstream.</p>
-  </div>
+  </div> -->
 </div>
 
-<h2 id="start">Get started</h2>
-<pre><code>git clone &lt;repository-url&gt;   <span class="cm"># TODO: real URL at publish time</span>
-cd ResourceAware
+<h2 id="start">Get Started</h2>
+<pre><code>git clone https://github.com/dkmrn/Resource-Aware-CSLib.git
+cd Resource-Aware-CSLib
 lake build
-lake env lean Examples/BFS.lean      <span class="cm"># levels, tree edges, costs under two models</span>
-lake env lean Examples/MergeSort.lean</code></pre>
+lake env lean Examples/BFS.lean
+lake env lean Examples/MergeSort.lean
+lake env lean Examples/Dijkstra.lean
+lake env lean Examples/RandomizedQuicksort.lean</code></pre>
 
-<h2>Relationship to CSLib and AlgoLean</h2>
-<p>
-  ResourceAware is an independent package built on
-  <a href="https://github.com/leanprover/cslib">CSLib</a> (pinned dependency;
-  the free-monad and <code>TimeM</code> foundations are CSLib's, used with
-  gratitude). <a href="https://github.com/Shreyas4991/Algolean">AlgoLean</a> is
-  the closest related project — a free-monad algorithms-and-complexity library
-  on the same CSLib foundations. The designs are complementary: AlgoLean spans
-  many computational models with a single model record per query type;
-  ResourceAware separates semantics from cost as independent structures, keeps
-  ordered traces, and focuses on deep textbook case studies. Selected reusable
-  components here are candidates for focused upstream CSLib contributions.
-</p>
+<h2>Related Works</h2>
+<ul class="features">
+  <li>Kleinberg, J., &amp; Tardos, É. (2006). <em>Algorithm design</em> (1st ed.).
+  Pearson Education. Source for the textbook algorithms and complexity claims
+  formalized in this repository.</li>
+  <li>Barrett et al. (2026). <em>CSLib: The Lean computer science library</em>.
+  arXiv. <a href="https://arxiv.org/abs/2602.04846">https://arxiv.org/abs/2602.04846</a>.
+  The accompanying <a href="https://github.com/leanprover/cslib">CSLib repository</a>
+  provides the free-monad and <code>TimeM</code> foundations used by the framework.</li>
+  <li>Mathlib contributors. (2026). <em>mathlib4</em> [Computer software].
+  <a href="https://github.com/leanprover-community/mathlib4">https://github.com/leanprover-community/mathlib4</a>.
+  Provides the mathematical library used for correctness, probability, and
+  asymptotic-complexity proofs.</li>
+  <li>Srinivas et al. (2026). <em>AlgoLean</em> (Version 1.0.0) [Computer software].
+  <a href="https://github.com/Shreyas4991/Algolean">https://github.com/Shreyas4991/Algolean</a>.
+  Related Lean work on verified algorithms and resource analysis.</li>
+</ul>
 
 <footer>
   <p>
     Apache 2.0 · built on <a href="https://github.com/leanprover/cslib">CSLib</a>
-    and <a href="https://github.com/leanprover-community/mathlib4">Mathlib</a> ·
-    a student research project
+    and <a href="https://github.com/leanprover-community/mathlib4">Mathlib</a>
     <!-- TODO before publishing: add author names (see CITATION.cff) and institution -->
   </p>
 </footer>
