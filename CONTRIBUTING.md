@@ -7,7 +7,7 @@ maintainers are students and review may be slow.
 ## Building
 
 ```sh
-lake build ResourceAware TextbookAlgorithms ThirdParty Examples
+lake --wfail build ResourceAware TextbookAlgorithms ThirdParty Examples
 ```
 
 The toolchain is pinned in `lean-toolchain` and the Mathlib and CSLib

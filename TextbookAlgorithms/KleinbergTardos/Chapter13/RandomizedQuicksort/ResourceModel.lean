@@ -24,7 +24,7 @@ these models.
 
 universe u
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+namespace KleinbergRandomizedQuicksort
 
 open ResourceAware.Algorithms
 
@@ -188,4 +188,4 @@ def operationCost (model : CostModel alpha) : Op alpha -> Nat
 
 end CostModel
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+end KleinbergRandomizedQuicksort

@@ -1,13 +1,13 @@
 /-
-Copyright (c) 2026 Jiyuan. All rights reserved.
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Jiyuan
+Authors: Jiyuan (Chai Yuen) Ji
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter03.DFS.Complexity
 import TextbookAlgorithms.KleinbergTardos.Chapter03.DFS.Correctness
 
 /-!
-# Executable toy test for Kleinberg DFS
+# Algorithm example: Kleinberg DFS
 
 This file runs the stack-based DFS model on a four-vertex graph with both adjacency-list
 and adjacency-matrix resource models.  The `#eval`s expose final explored state, ordered events,

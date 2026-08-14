@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 Dayakumaran Ramalingam. All rights reserved.
+Copyright (c) 2026 Lechen Wang, Daya Kumaran. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Dayakumaran Ramalingam
+Authors: Lechen Wang, Daya Kumaran
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter04.Dijkstra.Correctness
 import TextbookAlgorithms.KleinbergTardos.Chapter04.Dijkstra.Complexity
@@ -9,7 +9,7 @@ import Mathlib.Data.ENNReal.Basic
 import Mathlib.Data.NNRat.Order
 
 /-!
-# Executable Dijkstra architecture tests
+# Algorithm example: Dijkstra
 
 The fixtures instantiate one generic algorithm and semantic model at three weight types. Nat/ENat
 provides the full executable regressions, NNRat/WithTop NNRat exercises a fractional edge, and

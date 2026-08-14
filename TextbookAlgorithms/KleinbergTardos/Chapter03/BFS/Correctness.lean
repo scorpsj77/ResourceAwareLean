@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 Jiyuan. All rights reserved.
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Jiyuan
+Authors: Jiyuan (Chai Yuen) Ji
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter03.BFS.Complexity
 import ResourceAware.Algorithms.GraphTraversal.Specification
@@ -679,7 +679,7 @@ structure RunCertificate [DecidableEq V] (model : ResourceModel G V) (graph : G)
         GraphTraversal.TreeModel.edgeList source).ret.2.visited vertex = true
   shortestPathTree : TreeCertificate h source
 
-/-- Executable BFS yields exact reachability together with its shortest-path-tree certificate. -/
+/-- Package executable BFS reachability with a separately constructed shortest-path certificate. -/
 noncomputable def run_certificate [DecidableEq V] [Fintype V]
     (model : ResourceModel G V) (graph : G)
     (h : model.interface.IsUndirected graph) (source : V)

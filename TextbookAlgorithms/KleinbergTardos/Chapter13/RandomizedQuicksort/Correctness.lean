@@ -15,7 +15,7 @@ Random pivot choices may change the execution branch and its cost, but every sup
 a sorted permutation of the input.
 -/
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+namespace KleinbergRandomizedQuicksort
 
 open Cslib.Algorithms.Lean
 open ResourceAware.Program
@@ -338,4 +338,4 @@ theorem quicksort_joint_support_correct [LinearOrder alpha]
 
 end
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+end KleinbergRandomizedQuicksort

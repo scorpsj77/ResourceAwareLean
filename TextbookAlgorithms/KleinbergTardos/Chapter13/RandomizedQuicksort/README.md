@@ -23,12 +23,15 @@ network: zero comparisons for sizes zero and one, one for size two, and three fo
   correctness.
 - `Complexity.lean` derives comparison and textbook-cost recurrences from the interpreted run and
   proves the requested asymptotic bounds.
-- `Examples/RandomizedQuicksort.lean` checks results, operation observations, exact costs under multiple models, and small
+- `Examples/Algorithms/RandomizedQuicksort.lean` checks results, operation observations, exact costs under multiple models, and small
   theorem-backed endpoints.
 
 Generic PMF and `RandCostM` folds live in `ResourceAware.Program.Randomized`. The shared comparison
 request, semantic backend, and comparison-cost interface come from
 `ResourceAware.Algorithms.Sorting.Model`.
+
+Declarations in this case study live in the `KleinbergRandomizedQuicksort` namespace, matching the
+short project namespaces used by the other textbook algorithms.
 
 ## One program, several interpretations
 
@@ -102,11 +105,11 @@ From the repository root, run:
     lake build TextbookAlgorithms.KleinbergTardos.Chapter13.RandomizedQuicksort.Interpreters
     lake build TextbookAlgorithms.KleinbergTardos.Chapter13.RandomizedQuicksort.Correctness
     lake build TextbookAlgorithms.KleinbergTardos.Chapter13.RandomizedQuicksort.Complexity
-    lake build Examples.RandomizedQuicksort
+    lake build Examples.Algorithms.RandomizedQuicksort
     lake build ResourceAware
     lake build TextbookAlgorithms
     lake build
-    lake env lean Examples/RandomizedQuicksort.lean
+    lake env lean Examples/Algorithms/RandomizedQuicksort.lean
 
 Uniform PMFs are noncomputable, so their exact probability and expectation checks are kernel
 proofs. Runtime `#eval` output, when present, is limited to deterministic-pivot views.

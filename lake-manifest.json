@@ -101,6 +101,6 @@
    "inputRev": "v4.32.0-rc1",
    "inherited": true,
    "configFile": "lakefile.toml"}],
- "name": "ResourceAware",
+ "name": "ResourceAwareLean",
  "lakeDir": ".lake",
  "fixedToolchain": false}

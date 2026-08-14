@@ -4,12 +4,29 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate CITATION.cff
+        uses: citation-file-format/cffconvert-github-action@2.0.0
+        with:
+          args: "--validate"
       - uses: leanprover/lean-action@v1
         with:
-          build-args: "ResourceAware TextbookAlgorithms ThirdParty Examples"
+          build-args: "--wfail ResourceAware TextbookAlgorithms ThirdParty Examples"
+      - name: Run algorithm examples
+        run: |
+          lake env lean Examples/Algorithms/BFS.lean
+          lake env lean Examples/Algorithms/DFS.lean
+          lake env lean Examples/Algorithms/Dijkstra.lean
+          lake env lean Examples/Algorithms/MergeSort.lean
+          lake env lean Examples/Algorithms/RandomizedQuicksort.lean
+      - name: Run infrastructure examples
+        run: |
+          lake env lean Examples/Infrastructure/Graph.lean
+          lake env lean Examples/Infrastructure/PriorityQueue.lean
+          lake env lean Examples/Infrastructure/RandCostM.lean

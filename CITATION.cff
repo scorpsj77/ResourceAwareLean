@@ -10,7 +10,11 @@ abstract: >-
   varying semantic and cost models, with proved model-independence, ordered
   operation traces, and asymptotic bounds.
 authors:
-  - name: "Jiyuan (Chai Yuen) Ji"
-  - name: "Daya Kumaran"
-  - name: "James Needham"
-  - name: "Lechen Wang"
+  - given-names: "Jiyuan (Chai Yuen)"
+    family-names: "Ji"
+  - given-names: "Lechen"
+    family-names: "Wang"
+  - given-names: "Daya"
+    family-names: "Kumaran"
+  - given-names: "James"
+    family-names: "Needham"

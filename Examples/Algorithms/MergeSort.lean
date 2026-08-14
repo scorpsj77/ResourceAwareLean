@@ -1,13 +1,13 @@
 /-
-Copyright (c) 2026 Jiyuan. All rights reserved.
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Jiyuan
+Authors: Jiyuan (Chai Yuen) Ji
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter05.MergeSort.Complexity
 import TextbookAlgorithms.KleinbergTardos.Chapter05.MergeSort.Correctness
 
 /-!
-# Executable checks for Kleinberg merge sort
+# Algorithm example: Kleinberg merge sort
 
 The same abstract program is interpreted under two cost models.  The ordered operation sequence
 and sorted result are unchanged; only the measured event costs differ.

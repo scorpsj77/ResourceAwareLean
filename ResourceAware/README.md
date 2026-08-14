@@ -31,9 +31,8 @@ The layer may import `Cslib`, but `Cslib` must not import it. Textbook formaliza
 layer from `TextbookAlgorithms` and retain their source-specific algorithms and theorem statements
 there.
 
-`Foundations/Graph/Graph.lean` is the local experimental copy of the graph API proposed in CSLib
-PR #503. `GraphAdapters.lean` isolates that concrete API from the stable `Interface.lean`; changes
-to the candidate definitions should be absorbed by the adapters rather than propagated into
-algorithms.
+`ThirdParty/Graph.lean` is the local experimental copy of the graph API proposed in CSLib PR #503.
+`GraphAdapters.lean` isolates that concrete API from the stable `Interface.lean`; changes to the
+candidate definitions should be absorbed by the adapters rather than propagated into algorithms.
 
 See `Program/README.md` for the generic interface and the proof-reuse guarantees.

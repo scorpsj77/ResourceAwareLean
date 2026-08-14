@@ -21,7 +21,7 @@ This file develops the expected-comparison recurrence in a form suitable for con
 eventual endpoint below observes the program only through the concrete uniform interpreter.
 -/
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+namespace KleinbergRandomizedQuicksort
 
 open Cslib.Algorithms.Lean
 open ResourceAware.Program
@@ -2098,4 +2098,4 @@ theorem worstTextbookRuntimeBySize_isTheta :
 
 end
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+end KleinbergRandomizedQuicksort

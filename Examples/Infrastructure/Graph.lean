@@ -1,8 +1,13 @@
+/-
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jiyuan (Chai Yuen) Ji
+-/
 import ResourceAware.Foundations.Graph.GraphAdapters
 import ResourceAware.Foundations.Graph.ResourceModel
 
 /-!
-# Weighted graph foundation tests
+# Infrastructure example: weighted graphs
 
 This executable fixture specializes one concrete `DiGraph` to a singleton graph family so its
 chosen finite vertex, neighbor, and outgoing-arc lists can be packaged as the abstract access

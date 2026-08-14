@@ -14,7 +14,7 @@ Complexity.lean     Mathlib IsBigO statements
 ```
 
 Executable semantic, `Position`, invariant, and cost checks live in
-`Examples/PriorityQueue.lean`.
+`Examples/Infrastructure/PriorityQueue.lean`.
 
 ## Textbook correspondence
 
@@ -133,13 +133,14 @@ Proved results include:
 
 The remaining proof boundary is focused away from the Dijkstra path. This case study does not yet
 package full well-formedness and exact-contents theorems for arbitrary positional deletion or
-name-based deletion. Their executable cases remain covered in `Examples/PriorityQueue.lean`. The
+name-based deletion. Their executable cases remain covered in
+`Examples/Infrastructure/PriorityQueue.lean`. The
 optional checked wrappers can still validate all public mutations when useful. No claimed result
 uses `sorry`.
 
 Run the focused checks from the repository root:
 
 ```sh
-lake env lean Examples/PriorityQueue.lean
+lake env lean Examples/Infrastructure/PriorityQueue.lean
 lake build ResourceAware.Foundations.PriorityQueue
 ```

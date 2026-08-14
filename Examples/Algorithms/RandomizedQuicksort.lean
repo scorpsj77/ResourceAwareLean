@@ -8,14 +8,14 @@ import TextbookAlgorithms.KleinbergTardos.Chapter13.RandomizedQuicksort.Correctn
 import TextbookAlgorithms.KleinbergTardos.Chapter13.RandomizedQuicksort.Complexity
 
 /-!
-# Architecture and exact-cost checks for randomized Quicksort
+# Algorithm example: randomized Quicksort
 
 The executable first-pivot folds check concrete results, costs, and ordered observations. The
 correspondence theorems then connect those deterministic checks to the actual `RandCostM`
 interpreters without implementing the algorithm in a concrete cost monad.
 -/
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort.Test
+namespace KleinbergRandomizedQuicksort.Test
 
 open Cslib.Algorithms.Lean
 open ResourceAware.Program
@@ -457,4 +457,4 @@ example : worstComparisonCost endpointInput = 10 := by
 
 end
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort.Test
+end KleinbergRandomizedQuicksort.Test

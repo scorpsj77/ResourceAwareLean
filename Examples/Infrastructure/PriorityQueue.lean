@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jiyuan (Chai Yuen) Ji
+-/
 import ResourceAware.Foundations.PriorityQueue
 
 /-!
-# Executable checks for the Chapter 2 priority queue
+# Infrastructure example: priority queues
 
 These examples check semantic results, Position consistency, the main well-formedness predicate,
 and one aggregate measurement per operation.

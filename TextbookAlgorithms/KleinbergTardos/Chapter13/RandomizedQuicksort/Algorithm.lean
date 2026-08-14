@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 Resource-Aware-CSLib contributors. All rights reserved.
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Resource-Aware-CSLib contributors
+Authors: Jiyuan (Chai Yuen) Ji
 -/
 
 import ResourceAware.Algorithms.Sorting.Model
@@ -21,7 +21,7 @@ and does not run the recursion in a concrete cost monad.
 
 universe u
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+namespace KleinbergRandomizedQuicksort
 
 open ResourceAware ResourceAware.Algorithms
 
@@ -108,14 +108,14 @@ theorem bind (program : Program α β) (next : β -> Program α γ)
           exact hProgram.1.elim
 
 @[simp] theorem markBaseCase (size : Nat) :
-    PivotFree (RandomizedQuicksort.markBaseCase (α := α) size) := by
-  unfold RandomizedQuicksort.markBaseCase request ResourceAware.Program.request
+    PivotFree (KleinbergRandomizedQuicksort.markBaseCase (α := α) size) := by
+  unfold KleinbergRandomizedQuicksort.markBaseCase request ResourceAware.Program.request
   unfold PFunctor.FreeM.lift
   exact ⟨trivial, fun _ => trivial⟩
 
 @[simp] theorem compareLE (left right : α) :
-    PivotFree (RandomizedQuicksort.compareLE left right) := by
-  unfold RandomizedQuicksort.compareLE request ResourceAware.Program.request
+    PivotFree (KleinbergRandomizedQuicksort.compareLE left right) := by
+  unfold KleinbergRandomizedQuicksort.compareLE request ResourceAware.Program.request
   unfold PFunctor.FreeM.lift
   exact ⟨trivial, fun _ => trivial⟩
 
@@ -163,7 +163,7 @@ theorem PivotFree.partitionProgram (pivot : α) (input : List α) :
   induction input with
   | nil => exact PivotFree.pure _
   | cons value rest ih =>
-      rw [RandomizedQuicksort.partitionProgram]
+      rw [KleinbergRandomizedQuicksort.partitionProgram]
       refine PivotFree.bind _ _ (PivotFree.compareLE value pivot) ?_
       intro goesLower
       refine PivotFree.bind _ _ ih ?_
@@ -179,7 +179,7 @@ def compareSwap (left right : α) : Program α (α × α) := do
 
 theorem PivotFree.compareSwap (left right : α) :
     PivotFree (compareSwap left right) := by
-  unfold RandomizedQuicksort.compareSwap
+  unfold KleinbergRandomizedQuicksort.compareSwap
   refine PivotFree.bind _ _ (PivotFree.compareLE left right) ?_
   intro ordered
   split <;> exact PivotFree.pure _
@@ -213,21 +213,21 @@ theorem PivotFree.sortSmallProgram (input : List α) :
     PivotFree (sortSmallProgram input) := by
   cases input with
   | nil =>
-      rw [RandomizedQuicksort.sortSmallProgram]
+      rw [KleinbergRandomizedQuicksort.sortSmallProgram]
       refine PivotFree.bind _ _ (PivotFree.markBaseCase 0) ?_
       intro _
       exact PivotFree.pure _
   | cons first rest =>
       cases rest with
       | nil =>
-          rw [RandomizedQuicksort.sortSmallProgram]
+          rw [KleinbergRandomizedQuicksort.sortSmallProgram]
           refine PivotFree.bind _ _ (PivotFree.markBaseCase 1) ?_
           intro _
           exact PivotFree.pure _
       | cons second rest =>
           cases rest with
           | nil =>
-              rw [RandomizedQuicksort.sortSmallProgram]
+              rw [KleinbergRandomizedQuicksort.sortSmallProgram]
               refine PivotFree.bind _ _ (PivotFree.markBaseCase 2) ?_
               intro _
               refine PivotFree.bind _ _ (PivotFree.compareSwap first second) ?_
@@ -236,7 +236,7 @@ theorem PivotFree.sortSmallProgram (input : List α) :
           | cons third rest =>
               cases rest with
               | nil =>
-                  rw [RandomizedQuicksort.sortSmallProgram]
+                  rw [KleinbergRandomizedQuicksort.sortSmallProgram]
                   refine PivotFree.bind _ _ (PivotFree.markBaseCase 3) ?_
                   intro _
                   refine PivotFree.bind _ _ (PivotFree.compareSwap first second) ?_
@@ -300,4 +300,4 @@ theorem PivotFree.quicksortProgram_of_length_le_three (input : List α)
       rw [quicksortProgram, if_pos hLength]
       exact PivotFree.sortSmallProgram (first :: rest)
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+end KleinbergRandomizedQuicksort

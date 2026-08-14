@@ -49,7 +49,7 @@
     letter-spacing: -0.02em;
   }
   .hero h1 .aware { color: var(--accent); }
-  .hero h1 .lean { color: #fff; }
+  .hero h1 .lean { color: var(--fg); }
   .hero p.tag {
     margin: 0 0 1.4rem;
     font-size: 1.22rem;
@@ -151,8 +151,8 @@
   <p class="tag">
     ResourceAwareLean is a Lean&nbsp;4 framework for implementing algorithms
     abstractly and reusing their complexity analyses across different cost
-    models. 
-    <!-- Each model is defined by the costs it assigns to individual operations. -->
+    models. Each model is defined by the costs it assigns to individual
+    operations.
   </p>
   <div class="links">
     <a class="primary" href="https://github.com/scorpsj77/ResourceAwareLean">GitHub</a>
@@ -213,9 +213,9 @@
 </p>
 <p>
   <strong>Our approach.</strong> BFS, DFS, and Dijkstra are written against abstract
-  graph and priority-queue interfaces. Concrete data structures provide their
-  semantics and operation costs separately, allowing the same algorithms and
-  correctness results to be analyzed under different representations.
+  graph and priority-queue interfaces. BFS and DFS are analyzed with
+  adjacency-list and adjacency-matrix models. The current Dijkstra complexity
+  theorem uses an adjacency-list model and the verified named heap.
 </p>
 </div>
 
@@ -230,10 +230,27 @@
   <strong>Our approach.</strong> Randomized quicksort requests pivot choices as
   abstract operations. A probabilistic interpreter supplies those choices, and
   <code>RandCostM</code> keeps their results and costs together. The case study
-  proves sorted-permutation correctness and expected-cost bounds without defining
-  a second quicksort implementation for randomized execution.
+  proves sorted-permutation correctness and expected-cost bounds for
+  duplicate-free inputs without defining a second quicksort implementation for
+  randomized execution.
 </p>
 </div>
+
+<h2>Scope and limitations</h2>
+<ul class="features">
+  <li>Exact costs are costs in the selected source-level operation model, not
+  Lean evaluator or compiled-code runtimes.</li>
+  <li>Executable BFS and DFS prove exact reachability. The BFS shortest-path
+  tree and DFS ancestor results use separate certificate structures that the
+  executable runs do not currently construct.</li>
+  <li>Dijkstra assumes every enumerated vertex is reachable and uses
+  canonically nonnegative ordered additive weights. Its textbook
+  <code>O(m log n)</code> corollary is for adjacency lists and <code>n ≥ 2</code>.</li>
+  <li>The MergeSort asymptotic theorem is stated for power-of-two input lengths.</li>
+  <li>Randomized Quicksort's expected- and worst-cost theorems use distinct
+  keys. Its comparison and textbook models include only their explicitly
+  documented source-level charges.</li>
+</ul>
 
 <h2>What's Included</h2>
 <div class="cols">
@@ -266,12 +283,17 @@
 <h2 id="start">Get Started</h2>
 <pre><code>git clone https://github.com/scorpsj77/ResourceAwareLean.git
 cd ResourceAwareLean
-lake build
-lake env lean Examples/BFS.lean
-lake env lean Examples/DFS.lean
-lake env lean Examples/MergeSort.lean
-lake env lean Examples/Dijkstra.lean
-lake env lean Examples/RandomizedQuicksort.lean</code></pre>
+lake build ResourceAware TextbookAlgorithms ThirdParty Examples
+# Algorithm examples
+lake env lean Examples/Algorithms/BFS.lean
+lake env lean Examples/Algorithms/DFS.lean
+lake env lean Examples/Algorithms/Dijkstra.lean
+lake env lean Examples/Algorithms/MergeSort.lean
+lake env lean Examples/Algorithms/RandomizedQuicksort.lean
+# Infrastructure examples
+lake env lean Examples/Infrastructure/Graph.lean
+lake env lean Examples/Infrastructure/PriorityQueue.lean
+lake env lean Examples/Infrastructure/RandCostM.lean</code></pre>
 
 <h2>Related Work</h2>
 <ul class="features">

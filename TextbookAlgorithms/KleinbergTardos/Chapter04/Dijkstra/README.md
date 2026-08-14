@@ -38,7 +38,7 @@ program and one semantic implementation for all three.
 - `Complexity.lean` proves claim (4.15), the exact adjacency-list operation decomposition, the
   actual heap-run finite bound, `O((m+n) log(n+1))`, the reachability bound `n ≤ m+1`, and the
   textbook `O(m log n)` corollary for nontrivial reachable inputs.
-- `Examples/Dijkstra.lean` packages executable `Nat` and `NNRat` adjacency-list backends plus an `NNReal`
+- `Examples/Algorithms/Dijkstra.lean` packages executable `Nat` and `NNRat` adjacency-list backends plus an `NNReal`
   mathematical smoke specialization. It checks semantic output, predecessor occurrences,
   operation counts, exact costs, theorem-backed complexity instances, fractional arithmetic, and
   agreement between interpreter views.
@@ -148,14 +148,15 @@ lake env lean TextbookAlgorithms/KleinbergTardos/Chapter04/Dijkstra/Algorithm.le
 lake env lean TextbookAlgorithms/KleinbergTardos/Chapter04/Dijkstra/ResourceModel.lean
 lake build TextbookAlgorithms.KleinbergTardos.Chapter04.Dijkstra.Correctness
 lake build TextbookAlgorithms.KleinbergTardos.Chapter04.Dijkstra.Complexity
-lake env lean Examples/Dijkstra.lean
-lake build Examples.Dijkstra
+lake env lean Examples/Algorithms/Dijkstra.lean
+lake build Examples.Algorithms.Dijkstra
 lake build ResourceAware
-lake build Textbooks
+lake build TextbookAlgorithms
 lake build
 ```
 
-The examples in `Examples/Dijkstra.lean` cover all three specializations described above.
+The examples in `Examples/Algorithms/Dijkstra.lean` cover all three specializations described
+above.
 
 ## Correctness theorem
 

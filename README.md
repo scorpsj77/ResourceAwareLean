@@ -39,7 +39,7 @@ Libraries:
 | `ResourceAware` | The framework: free programs, semantics/cost records, generic interpreter, traces, erasure, reweighting, graph interface and resource models |
 | `TextbookAlgorithms` | Kleinberg–Tardos case studies: BFS and DFS (Chapter 3), Dijkstra (Chapter 4), mergesort (Chapter 5), and randomized quicksort (Chapter 13) |
 | `ThirdParty` | Local copy of the graph API from CSLib PR #503 (not authored by this project; see `ThirdParty/README.md`) |
-| `Examples` | Executable demonstrations for BFS, DFS, Dijkstra, MergeSort, randomized Quicksort, and their reusable infrastructure |
+| `Examples` | Algorithm demonstrations for BFS, DFS, Dijkstra, MergeSort, and randomized Quicksort, plus infrastructure demonstrations for graphs, priority queues, and `RandCostM` |
 
 ## Status
 
@@ -47,13 +47,13 @@ All libraries build without `sorry`, `admit`, or custom axioms.
 
 | Claim | Status |
 | --- | --- |
-| Semantics/cost separation with a proved independence theorem (`mapEvents_runFrom_eq`: changing only the cost model preserves the result, the final state, and the erased operation trace) | Proved |
-| Erasure and reweighting: operation profiles as reusable proof objects (`weightedOperationCost_eq_of_operationTrace_eq`, `exactCost_le_weightedOperationCost`) | Proved |
+| Semantics/cost separation with a proved independence theorem (`ResourceAware.Program.mapEvents_runFrom_eq`: changing only the cost model preserves the result, the final state, and the erased operation trace) | Proved |
+| Erasure and reweighting: operation profiles as reusable proof objects (`ResourceAware.Program.weightedOperationCost_eq_of_operationTrace_eq`, `ResourceAware.Program.exactCost_le_weightedOperationCost`) | Proved |
 | BFS and DFS: execution-linked reachability with representation-sensitive cost models (the same program under adjacency-list and adjacency-matrix models) | Proved |
-| Dijkstra: execution-linked shortest paths over nonnegative weights with heap and graph-representation cost models | Proved |
+| Dijkstra: execution-linked shortest paths for reachable enumerated vertices over canonically nonnegative ordered additive weights, with adjacency-list and heap cost models | Proved, with the stated restrictions |
 | Exact modeled cost carried through to Mathlib `IsBigO` bounds (MergeSort bound stated on powers of two; representation-cost bounds for both graph models) | Proved, with the stated restrictions |
 | MergeSort as introductory case study: correctness and exact/weighted cost under two cost models | Proved |
-| Randomized Quicksort: sorted-permutation correctness and expected-cost bounds over the probabilistic cost interpreter | Proved |
+| Randomized Quicksort: sorted-permutation correctness and expected-cost bounds for duplicate-free inputs under the documented probabilistic cost models | Proved, with the stated restrictions |
 | Executable examples that actually run (`#eval` demonstrations under `lake env lean`) | Working |
 
 ## Get started
@@ -69,14 +69,22 @@ everything, including the third-party graph API and the examples:
 lake build ResourceAware TextbookAlgorithms ThirdParty Examples
 ```
 
-Run an executable example and see its `#eval` output:
+Run an algorithm example and see its `#eval` output:
 
 ```sh
-lake env lean Examples/BFS.lean
-lake env lean Examples/DFS.lean
-lake env lean Examples/Dijkstra.lean
-lake env lean Examples/MergeSort.lean
-lake env lean Examples/RandomizedQuicksort.lean
+lake env lean Examples/Algorithms/BFS.lean
+lake env lean Examples/Algorithms/DFS.lean
+lake env lean Examples/Algorithms/Dijkstra.lean
+lake env lean Examples/Algorithms/MergeSort.lean
+lake env lean Examples/Algorithms/RandomizedQuicksort.lean
+```
+
+The infrastructure examples exercise reusable framework components directly:
+
+```sh
+lake env lean Examples/Infrastructure/Graph.lean
+lake env lean Examples/Infrastructure/PriorityQueue.lean
+lake env lean Examples/Infrastructure/RandCostM.lean
 ```
 
 ## Relationship to CSLib
@@ -100,11 +108,21 @@ upstream contributions.
   reachability. The shortest-path-tree certificate is supplied by a separate
   noncomputable construction; it is not yet proved that the concrete edge list
   and level table emitted by the run form that shortest-path tree.
-<!-- - **DFS certificate.** The executable iterative DFS proves execution-linked
+- **DFS certificate.** The executable iterative DFS proves execution-linked
   reachability. The Kleinberg–Tardos ancestor theorem is proved from an
   abstract recursive-tree certificate structure that the executable DFS does
-  not currently construct. -->
-- The MergeSort asymptotic bound is stated for inputs whose length is a power of two, following the implementation and assumptions in Kleinberg and Tardos’s textbook.
+  not currently construct.
+- **Dijkstra assumptions.** The shortest-path theorem assumes every enumerated
+  vertex is reachable from the source and uses a canonically nonnegative
+  ordered additive weight type. The textbook `O(m log n)` corollary is for the
+  adjacency-list model, reachable inputs, and `n ≥ 2`.
+- **MergeSort input sizes.** The asymptotic bound is stated for inputs whose
+  length is a power of two, following the implementation and assumptions in
+  Kleinberg and Tardos's textbook.
+- **Randomized Quicksort scope.** Expected- and worst-cost theorems are stated
+  for duplicate-free inputs. The comparison-only model omits pivot handling,
+  allocation, and recursion overhead; the textbook model accounts for them
+  only through its documented linear abstraction.
 
 ## Related work
 

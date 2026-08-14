@@ -8,10 +8,12 @@ module
 
 public import ResourceAware.Program.RandCostM
 public import Mathlib.Probability.Distributions.Uniform
-public import Mathlib.Tactic
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
 
 /-!
-# Initial tests for `RandCostM`
+# Infrastructure example: `RandCostM`
 
 This file exercises five increasingly substantial examples:
 

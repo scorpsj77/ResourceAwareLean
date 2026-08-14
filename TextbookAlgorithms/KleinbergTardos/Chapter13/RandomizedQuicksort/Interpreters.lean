@@ -24,7 +24,7 @@ measurements while retaining the same joint result/cost distribution after trace
 
 universe u
 
-namespace Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+namespace KleinbergRandomizedQuicksort
 
 open Cslib.Algorithms.Lean
 open ResourceAware.Program
@@ -539,4 +539,4 @@ theorem eraseTrace_interpretTracedWith (backend : SemanticBackend alpha)
 
 end
 
-end Cslib.Textbooks.KleinbergTardos.Chapter13.RandomizedQuicksort
+end KleinbergRandomizedQuicksort

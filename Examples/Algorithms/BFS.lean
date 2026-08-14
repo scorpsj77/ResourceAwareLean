@@ -1,13 +1,13 @@
 /-
-Copyright (c) 2026 Jiyuan. All rights reserved.
+Copyright (c) 2026 Jiyuan (Chai Yuen) Ji. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Jiyuan
+Authors: Jiyuan (Chai Yuen) Ji
 -/
 import TextbookAlgorithms.KleinbergTardos.Chapter03.BFS.Complexity
 import TextbookAlgorithms.KleinbergTardos.Chapter03.BFS.Correctness
 
 /-!
-# Executable toy test for Kleinberg BFS
+# Algorithm example: Kleinberg BFS
 
 This file is intentionally small and concrete. It gives a four-vertex graph, runs the
 generic measured Kleinberg BFS model, and exposes the final state, ordered events, and

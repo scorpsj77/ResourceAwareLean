@@ -8,15 +8,15 @@ separates four concerns:
 3. graph-representation resource models,
 4. adapters from the concrete API to the stable interface.
 
-`Graph.lean` is a local experimental copy of the graph API proposed in CSLib PR #503.
+`ThirdParty/Graph.lean` is a local experimental copy of the graph API proposed in CSLib PR #503.
 `GraphAdapters.lean` is its only consumer in the algorithm-facing stack. Algorithm-specific state,
-traces, and traversal programs live under `ResourceAware/Algorithms` or `Textbooks`.
+traces, and traversal programs live under `ResourceAware/Algorithms` or `TextbookAlgorithms`.
 
 ## File Map
 
-The files in this folder are:
+The modules used by this layer are:
 
-* `Graph.lean`
+* `ThirdParty/Graph.lean`
 
   Defines the experimental concrete graph structures in `ResourceAware.Graph.Concrete`. Its
   source is CSLib PR #503, and its copyright and authorship are preserved.
@@ -52,7 +52,7 @@ The files in this folder are:
 
 * `GraphAdapters.lean`
 
-  Connects the concrete graph structures in `Graph.lean` to the stable interface in
+  Connects the concrete graph structures in `ThirdParty/Graph.lean` to the stable interface in
   `Interface.lean`, including a label-to-weight adapter for `Concrete.DiGraph`.
 
   This file is the place to update when concrete graph APIs change.
@@ -63,7 +63,7 @@ The intended dependency direction is:
 
 ```text
 Experimental concrete graph definitions
-  ResourceAware/Foundations/Graph/Graph.lean
+  ThirdParty/Graph.lean
         |
         v
 Concrete-to-stable adapters
@@ -90,8 +90,8 @@ traversal models. Those modules are algorithm-side consumers of the graph interf
 
 ## Concrete Graph Structures
 
-`Graph.lean` defines the concrete graph-like structures proposed in CSLib PR #503 under the
-`ResourceAware.Graph.Concrete` namespace.
+`ThirdParty/Graph.lean` defines the concrete graph-like structures proposed in CSLib PR #503 under
+the `ResourceAware.Graph.Concrete` namespace.
 
 For undirected graphs:
 

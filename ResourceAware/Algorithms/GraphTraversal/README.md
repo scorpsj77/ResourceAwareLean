@@ -98,7 +98,8 @@ Correctness.lean     semantic theorems
 Complexity.lean      exact, aggregate, and asymptotic resource bounds
 ```
 
-Executable examples live in `Examples/BFS.lean` and `Examples/DFS.lean`.
+Executable examples live in `Examples/Algorithms/BFS.lean` and
+`Examples/Algorithms/DFS.lean`.
 
 BFS and DFS differ in control flow and their fuel/space arguments, but both call
 `GraphTraversal.Model.interpret`. This is the key simplification: the family owns the execution

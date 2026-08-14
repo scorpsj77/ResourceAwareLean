@@ -15,7 +15,7 @@ Correctness.lean     sorted-permutation correctness for pure and measured runs
 Complexity.lean      operation profile, recurrence, and asymptotic theorem
 ```
 
-Executable examples live in `Examples/MergeSort.lean`.
+Executable examples live in `Examples/Algorithms/MergeSort.lean`.
 
 `MergeSort.lean` is the aggregate import for the completed case study. There is intentionally no
 `Interpreters.lean`: `ResourceModel.lean` only supplies the MergeSort-specific semantics and cost
@@ -113,7 +113,7 @@ cases independently.
 Run:
 
 ```sh
-lake env lean Examples/MergeSort.lean
+lake env lean Examples/Algorithms/MergeSort.lean
 ```
 
 For `[4, 1, 3, 2]`, comparison-only execution records five comparisons. With unit comparison,
