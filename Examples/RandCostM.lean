@@ -44,13 +44,11 @@ private theorem uniform_prod {α β : Type u}
   classical
   ext p
   rcases p with ⟨a, b⟩
-
   change
     ((PMF.uniformOfFintype α).bind fun a' =>
       (PMF.uniformOfFintype β).bind fun b' =>
         PMF.pure (a', b')) (a, b) =
       (PMF.uniformOfFintype (α × β)) (a, b)
-
   simp only [
     PMF.bind_apply,
     PMF.uniformOfFintype_apply,
@@ -62,7 +60,6 @@ private theorem uniform_prod {α β : Type u}
     Fintype.card_prod,
     Nat.cast_mul
   ]
-
   have inner_sum (a₁ : α) :
       (∑' a₂ : β,
         if a = a₁ ∧ b = a₂ then
@@ -78,7 +75,6 @@ private theorem uniform_prod {α β : Type u}
     · subst a₁
       simp
     · simp [h]
-
   calc
     (∑' a₁ : α,
         (↑(Fintype.card α) : ENNReal)⁻¹ *
@@ -97,12 +93,10 @@ private theorem uniform_prod {α β : Type u}
           apply tsum_congr
           intro a₁
           rw [inner_sum a₁]
-
     _ =
       (↑(Fintype.card α) : ENNReal)⁻¹ *
         (↑(Fintype.card β) : ENNReal)⁻¹ := by
           simp
-
     _ =
       (↑(Fintype.card α) * ↑(Fintype.card β) : ENNReal)⁻¹ := by
       exact (ENNReal.mul_inv
@@ -119,16 +113,12 @@ private theorem map_uniform_of_bijective {α : Type u} {β : Type v}
       PMF.uniformOfFintype β := by
   classical
   ext b
-
   simp only [
     PMF.map_apply,
     PMF.uniformOfFintype_apply
   ]
-
   rw [Fintype.card_of_bijective hf]
-
   obtain ⟨a, ha⟩ := hf.2 b
-
   calc
     (∑' x : α,
         if b = f x then
@@ -154,7 +144,6 @@ private theorem map_uniform_of_bijective {α : Type u} {β : Type v}
             f x = b := h.symm
             _ = f a := ha.symm
         simp [hxa, hbx]
-
     _ = (↑(Fintype.card β) : ENNReal)⁻¹ := by
       simp
 
@@ -193,7 +182,6 @@ theorem coinBranch_expectedCost :
   simp only [coinBranch, expectedCost_sampleWithCost]
   norm_num [weightedSum, fairCoin, coinCost,
     PMF.uniformOfFintype_apply, tsum_fintype, Fintype.sum_bool]
-
   calc
     (2 : ENNReal)⁻¹ + 2⁻¹ * 3
         = (2⁻¹ + 2⁻¹) + (2⁻¹ + 2⁻¹) := by
@@ -243,7 +231,6 @@ theorem searchWithoutReplacement3_expectedCost :
     expectedCost_sampleWithCost]
   norm_num [weightedSum, uniformFin3, probeCount,
     PMF.uniformOfFintype_apply, tsum_fintype, Fin.sum_univ_succ]
-
   calc
     (3 : ENNReal)⁻¹ +
         ((3 : ENNReal)⁻¹ * 2 + (3 : ENNReal)⁻¹ * 3)
@@ -276,7 +263,7 @@ inductive Perm3
   | p021
   | p102
   | p012
-  deriving DecidableEq, Repr, Fintype, Inhabited
+  deriving DecidableEq, Fintype, Nonempty
 
 /-- Decode the two Fisher--Yates random choices into the resulting permutation. -/
 def seedToPerm3 (s : Shuffle3Seed) : Perm3 :=
@@ -325,15 +312,12 @@ def fisherYates3 : RandCostM ℕ Perm3 :=
     ret_sampleAtCost,
     ret_pure
   ]
-
   unfold uniformFin3 uniformFin2
-
   change
     ((PMF.uniformOfFintype (Fin 3)).bind fun i =>
       (PMF.uniformOfFintype (Fin 2)).bind fun j =>
         PMF.pure (i, j)) =
       PMF.uniformOfFintype (Fin 3 × Fin 2)
-
   exact uniform_prod (α := Fin 3) (β := Fin 2)
 
 /-- Fisher--Yates therefore produces each of the six permutations uniformly. -/
@@ -426,15 +410,14 @@ additional comparison.
     PMF.uniformOfFintype_apply,
     tsum_fintype,
     Fin.sum_univ_succ
-  ] <;> ring
+  ]; ring_nf
   trivial
 
 /-- Mapping the trace to the sorted output does not change its expected cost. -/
 @[simp] theorem randomPivotQuicksort3_expectedCost :
     randomPivotQuicksort3.expectedCost =
       2 + ((3 : ENNReal)⁻¹ + (3 : ENNReal)⁻¹) := by
-  simpa [randomPivotQuicksort3] using
-    randomPivotQuicksort3Trace_expectedCost
+  simp [randomPivotQuicksort3]
 
 /-! ## Test 5: random-pivot quickselect on three elements -/
 
@@ -502,14 +485,13 @@ only the largest first pivot leaves a nontrivial recursive subproblem.
     PMF.uniformOfFintype_apply,
     tsum_fintype,
     Fin.sum_univ_succ
-  ] <;> ring
+  ]
 
 /-- Mapping the trace to the selected minimum does not change expected cost. -/
 @[simp] theorem randomPivotQuickselect3Min_expectedCost :
     randomPivotQuickselect3Min.expectedCost =
       2 + (3 : ENNReal)⁻¹ := by
-  simpa [randomPivotQuickselect3Min] using
-    randomPivotQuickselect3MinTrace_expectedCost
+  simp [randomPivotQuickselect3Min]
 
 end
 

@@ -192,7 +192,7 @@ theorem linearPartition_lower_length_eq_rank [LinearOrder alpha]
     rw [← hNodup.erase_get index]
     ext value
     simp only [List.toFinset_filter, Finset.mem_filter, List.mem_toFinset,
-      Bool.decide_coe, decide_eq_true_eq]
+      decide_eq_true_eq]
     rw [hNodup.mem_erase_iff]
     constructor
     · rintro ⟨⟨hne, hmem⟩, hle⟩
@@ -319,7 +319,7 @@ theorem expectedCost_sortSmallProgram_comparisonOnly [LinearOrder alpha]
         (sortSmallProgram [first, second])).expectedCost = (1 : ENNReal)
     rw [sortSmallProgram, interpretWith_bind,
       interpretWith_markBaseCase_comparisonOnly]
-    simp [RandCostM.expectedCost_bind_split, interpretWith_bind,
+    simp [RandCostM.expectedCost_bind_split,
       interpretWith_map, CostModel.comparisonOnly,
       Sorting.ComparisonCostModel.constant]
   · norm_num [smallComparisonCost]
@@ -771,7 +771,7 @@ theorem quicksort_expectedComparisonCost_le [LinearOrder alpha]
                 hUpperShort (upperSubproblem source index)
                 (upperSubproblem_nodup source hNodup index) rfl
               exact add_le_add (add_le_add_right hLowerBound c) hUpperBound
-            refine le_trans (mul_le_mul_left' hSumBound (source.length : ENNReal)⁻¹) ?_
+            refine le_trans (mul_le_mul_right hSumBound (source.length : ENNReal)⁻¹) ?_
             have hReindex :
                 (∑ index : Fin source.length,
                     ((c + expectedComparisonEnvelopeENN
@@ -881,25 +881,34 @@ theorem sortSmallProgram_joint_cost_eq [LinearOrder alpha]
       (interpret CostModel.comparisonOnly (sortSmallProgram input)).joint.support) :
     cost = smallComparisonCost input.length := by
   rcases input with _ | ⟨first, _ | ⟨second, _ | ⟨third, _ | ⟨fourth, rest⟩⟩⟩⟩
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_comparisonOnly, interpretWith_pure,
-      interpretWith_map,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, sortSmallProgram, bind_pure_comp, interpretWith_map,
+      interpretWith_markBaseCase, RandCostM.joint_map, measuredHandler_joint,
+      CostModel.operationCost_baseCase, CostModel.comparisonOnly_baseCase,
+      semanticHandler_baseCase, PMF.pure_map, PMF.support_pure, Set.mem_singleton_iff,
+      Prod.mk.injEq, smallComparisonCost, List.length_nil] at hMem ⊢
     exact hMem.2
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_comparisonOnly, interpretWith_pure,
-      interpretWith_map,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, sortSmallProgram, bind_pure_comp, interpretWith_map,
+      interpretWith_markBaseCase, RandCostM.joint_map, measuredHandler_joint,
+      CostModel.operationCost_baseCase, CostModel.comparisonOnly_baseCase,
+      semanticHandler_baseCase, PMF.pure_map, PMF.support_pure, Set.mem_singleton_iff,
+      Prod.mk.injEq, smallComparisonCost, List.length_cons, List.length_nil,
+      zero_add] at hMem ⊢
     exact hMem.2
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_comparisonOnly, interpretWith_map,
-      CostModel.comparisonOnly, Sorting.ComparisonCostModel.constant,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.comparisonOnly, Sorting.ComparisonCostModel.constant,
+      sortSmallProgram, bind_pure_comp, interpretWith_bind, interpretWith_markBaseCase,
+      interpretWith_map, interpretWith_compareSwap, RandCostM.deterministic,
+      RandCostM.joint_bind, measuredHandler_joint, CostModel.operationCost_baseCase,
+      semanticHandler_baseCase, PMF.pure_map, RandCostM.joint_map, PMF.pure_bind,
+      zero_add, PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
+      smallComparisonCost, List.length_cons, List.length_nil, Nat.reduceAdd] at hMem ⊢
     exact hMem.2
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_comparisonOnly, interpretWith_map,
-      CostModel.comparisonOnly, Sorting.ComparisonCostModel.constant,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.comparisonOnly, Sorting.ComparisonCostModel.constant,
+      sortSmallProgram, bind_pure_comp, interpretWith_bind, interpretWith_markBaseCase,
+      interpretWith_compareSwap, RandCostM.deterministic, interpretWith_map,
+      RandCostM.joint_bind, measuredHandler_joint, CostModel.operationCost_baseCase,
+      semanticHandler_baseCase, PMF.pure_map, RandCostM.joint_map, PMF.pure_bind,
+      Nat.reduceAdd, zero_add, PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
+      smallComparisonCost, List.length_cons, List.length_nil] at hMem ⊢
     omega
   · simp only [List.length_cons] at hSmall
     omega
@@ -929,8 +938,10 @@ theorem quicksortContinuation_joint_cost_decompose [LinearOrder alpha]
   obtain ⟨parts, partitionCost, afterPartitionCost,
       hParts, hAfterPartition, hCost⟩ :=
     (mem_joint_support_bind_iff _ _ _ _).mp hMem
-  simp [RandCostM.deterministic] at hParts
-  rcases hParts with ⟨rfl, rfl⟩
+  rw [RandCostM.joint_deterministic, PMF.mem_support_pure_iff] at hParts
+  injection hParts with hPartsResult hPartsCost
+  subst parts
+  subst partitionCost
   rw [interpretWith_bind] at hAfterPartition
   obtain ⟨lowerOutput, lowerCost, afterLowerCost,
       hLower, hAfterLower, hAfterPartitionCost⟩ :=
@@ -940,14 +951,14 @@ theorem quicksortContinuation_joint_cost_decompose [LinearOrder alpha]
       hUpper, hFinal, hAfterLowerCost⟩ :=
     (mem_joint_support_bind_iff _ _ _ _).mp hAfterLower
   rw [interpretWith_pure] at hFinal
-  simp [RandCostM.deterministic] at hFinal
+  rw [RandCostM.joint_pure, PMF.mem_support_pure_iff] at hFinal
+  have hFinalCost := congrArg Prod.snd hFinal
   have hErase : (input.eraseIdx index).length = input.length - 1 :=
     List.length_eraseIdx_of_lt index.isLt
   refine ⟨lowerOutput, lowerCost, upperOutput, upperCost, ?_, ?_, ?_⟩
   · simpa [quicksort, interpret, lowerSubproblem, partitionAt] using hLower
   · simpa [quicksort, interpret, upperSubproblem, partitionAt] using hUpper
-  · rcases hFinal with ⟨_, rfl⟩
-    omega
+  · omega
 
 /-- Supported recursive branches assemble into a supported fixed-pivot continuation branch,
 with the partition comparisons and both recursive costs added exactly. -/
@@ -1278,7 +1289,7 @@ theorem expectedCost_sortSmallProgram_textbookModel [LinearOrder alpha]
     unfold interpret
     rw [sortSmallProgram, interpretWith_bind,
       interpretWith_markBaseCase_textbookModel]
-    simp [RandCostM.expectedCost_bind_split, interpretWith_bind,
+    simp [RandCostM.expectedCost_bind_split,
       interpretWith_map, CostModel.textbookModel, CostModel.linearTextbook,
       Sorting.ComparisonCostModel.constant]
     norm_num
@@ -1452,11 +1463,7 @@ theorem textbookQuicksort_expectedCost_le [LinearOrder alpha]
               ((1 : ENNReal) + smallComparisonCost input.length) +
                 ((smallComparisonCost input.length : ENNReal) +
                   2 * (input.length : ENNReal)) := by
-            simpa using add_le_add_left
-              (show (0 : ENNReal) <=
-                (smallComparisonCost input.length : ENNReal) +
-                  2 * (input.length : ENNReal) from bot_le)
-              ((1 : ENNReal) + smallComparisonCost input.length)
+            simp
           _ = 2 * (smallComparisonCost input.length : ENNReal) +
                 2 * (input.length : ENNReal) + 1 := by ring
       · cases input with
@@ -1696,29 +1703,38 @@ theorem sortSmallProgram_joint_cost_textbookModel [LinearOrder alpha]
       (interpret CostModel.textbookModel (sortSmallProgram input)).joint.support) :
     cost = 1 + smallComparisonCost input.length := by
   rcases input with _ | ⟨first, _ | ⟨second, _ | ⟨third, _ | ⟨fourth, rest⟩⟩⟩⟩
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_textbookModel, interpretWith_pure,
-      interpretWith_map, CostModel.textbookModel, CostModel.linearTextbook,
-      Sorting.ComparisonCostModel.constant,
-      PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.textbookModel, CostModel.linearTextbook,
+      Sorting.ComparisonCostModel.constant, one_mul, sortSmallProgram, bind_pure_comp,
+      interpretWith_map, interpretWith_markBaseCase, RandCostM.joint_map,
+      measuredHandler_joint, CostModel.operationCost_baseCase, semanticHandler_baseCase,
+      PMF.pure_map, PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
+      smallComparisonCost, List.length_nil, add_zero] at hMem ⊢
     exact hMem.2
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_markBaseCase_textbookModel, interpretWith_pure,
-      interpretWith_map, CostModel.textbookModel, CostModel.linearTextbook,
-      Sorting.ComparisonCostModel.constant,
-      PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.textbookModel, CostModel.linearTextbook,
+      Sorting.ComparisonCostModel.constant, one_mul, sortSmallProgram, bind_pure_comp,
+      interpretWith_map, interpretWith_markBaseCase, RandCostM.joint_map,
+      measuredHandler_joint, CostModel.operationCost_baseCase, semanticHandler_baseCase,
+      PMF.pure_map, PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
+      smallComparisonCost, List.length_cons, List.length_nil, zero_add,
+      add_zero] at hMem ⊢
     exact hMem.2
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-      interpretWith_map,
-      CostModel.textbookModel, CostModel.linearTextbook,
-      Sorting.ComparisonCostModel.constant,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.textbookModel, CostModel.linearTextbook,
+      Sorting.ComparisonCostModel.constant, one_mul, sortSmallProgram, bind_pure_comp,
+      interpretWith_bind, interpretWith_markBaseCase, interpretWith_map,
+      interpretWith_compareSwap, RandCostM.deterministic, RandCostM.joint_bind,
+      measuredHandler_joint, CostModel.operationCost_baseCase, semanticHandler_baseCase,
+      PMF.pure_map, RandCostM.joint_map, PMF.pure_bind, Nat.reduceAdd,
+      PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq, smallComparisonCost,
+      List.length_cons, List.length_nil, zero_add] at hMem ⊢
     omega
-  · simp [sortSmallProgram, interpret, interpretWith_bind,
-       interpretWith_map,
-      CostModel.textbookModel, CostModel.linearTextbook,
-      Sorting.ComparisonCostModel.constant,
-      RandCostM.deterministic, PMF.pure_map, smallComparisonCost] at hMem ⊢
+  · simp only [interpret, CostModel.textbookModel, CostModel.linearTextbook,
+      Sorting.ComparisonCostModel.constant, one_mul, sortSmallProgram, bind_pure_comp,
+      interpretWith_bind, interpretWith_markBaseCase, interpretWith_compareSwap,
+      RandCostM.deterministic, interpretWith_map, RandCostM.joint_bind,
+      measuredHandler_joint, CostModel.operationCost_baseCase, semanticHandler_baseCase,
+      PMF.pure_map, RandCostM.joint_map, PMF.pure_bind, Nat.reduceAdd,
+      PMF.support_pure, Set.mem_singleton_iff, Prod.mk.injEq, smallComparisonCost,
+      List.length_cons, List.length_nil, zero_add] at hMem ⊢
     omega
   · simp only [List.length_cons] at hSmall
     omega
@@ -1760,8 +1776,10 @@ theorem textbookQuicksortContinuation_joint_cost_decompose [LinearOrder alpha]
   obtain ⟨parts, partitionCost, afterPartitionCost,
       hParts, hAfterPartition, hCost⟩ :=
     (mem_joint_support_bind_iff _ _ _ _).mp hMem
-  simp [RandCostM.deterministic] at hParts
-  rcases hParts with ⟨rfl, rfl⟩
+  rw [RandCostM.joint_deterministic, PMF.mem_support_pure_iff] at hParts
+  injection hParts with hPartsResult hPartsCost
+  subst parts
+  subst partitionCost
   rw [interpretWith_bind] at hAfterPartition
   obtain ⟨lowerOutput, lowerCost, afterLowerCost,
       hLower, hAfterLower, hAfterPartitionCost⟩ :=
@@ -1771,14 +1789,14 @@ theorem textbookQuicksortContinuation_joint_cost_decompose [LinearOrder alpha]
       hUpper, hFinal, hAfterLowerCost⟩ :=
     (mem_joint_support_bind_iff _ _ _ _).mp hAfterLower
   rw [interpretWith_pure] at hFinal
-  simp [RandCostM.deterministic] at hFinal
+  rw [RandCostM.joint_pure, PMF.mem_support_pure_iff] at hFinal
+  have hFinalCost := congrArg Prod.snd hFinal
   have hErase : (input.eraseIdx index).length = input.length - 1 :=
     List.length_eraseIdx_of_lt index.isLt
   refine ⟨lowerOutput, lowerCost, upperOutput, upperCost, ?_, ?_, ?_⟩
   · simpa [textbookQuicksort, interpret, lowerSubproblem, partitionAt] using hLower
   · simpa [textbookQuicksort, interpret, upperSubproblem, partitionAt] using hUpper
-  · rcases hFinal with ⟨_, rfl⟩
-    omega
+  · omega
 
 theorem textbookQuicksortContinuation_joint_support_of_recursive [LinearOrder alpha]
     (input : List alpha) (index : Fin input.length)

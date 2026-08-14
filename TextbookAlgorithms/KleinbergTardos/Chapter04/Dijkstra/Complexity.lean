@@ -215,6 +215,7 @@ def heapExactCost
         (Signature n Edge Weight).A Nat) α) : Nat :=
   ResourceAware.Program.exactCost computation
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 @[simp] theorem heapExactCost_bind
     (computation : TraceM
       (ResourceAware.Program.Event
@@ -1116,6 +1117,7 @@ theorem dijkstraLoop_outgoingRowWork_eq_relaxationCandidate
         apply congrArg
         exact ih _
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Decoding all dense names enumerates every represented graph vertex exactly once. -/
 theorem decoded_finRange_perm_vertices
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -1156,6 +1158,7 @@ theorem reachable_exists_incoming
         exact ⟨source, hedge⟩
       · exact ih hmiddle
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /--
 If every enumerated vertex is reachable from the source, choosing one incoming occurrence
 for every non-source vertex injects those vertices into the directed occurrence list.
@@ -1232,6 +1235,7 @@ theorem vertexCount_le_directedEdgeOccurrenceCount_add_one_of_reachable
   change vertices.length ≤ occurrences.length + 1
   omega
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Summing indexed row lengths is exactly the directed edge-occurrence count `m`. -/
 theorem sum_indexedRowLength_finRange
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -1538,6 +1542,7 @@ theorem claim_4_15_operation_counts
   · rw [dijkstra_profile_eq_loop model graph index source changeKeyCharge (by rfl)]
     exact completeLoop_changeKey_count_le model graph index source
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- In the textbook adjacency-list representation, one row request costs its row length. -/
 theorem adjacencyList_indexedRowCost
     (base : ResourceModel G V)
@@ -1628,6 +1633,7 @@ theorem claim_4_15_adjacencyList
   intro name
   exact adjacencyList_indexedRowCost base edgeView neighbors graph index name
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Decompose the static heap envelope into the four post-initialization source metrics. -/
 theorem heapLoopUpperProfile_eq_components
     (model : WeightedResourceModel G V Edge Weight) (graph : G)

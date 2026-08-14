@@ -363,7 +363,7 @@ theorem weightedSum_mono (p : PMF α) {f g : α → ENNReal}
     weightedSum p f ≤ weightedSum p g := by
   apply ENNReal.tsum_le_tsum
   intro a
-  exact mul_le_mul_left' (h a) (p a)
+  exact mul_le_mul_right (h a) (p a)
 
 /-- The expected-cost weakest preexpectation transformer.
 
@@ -526,7 +526,7 @@ Here `m >>= id` is monadic `join`: evaluating after flattening agrees with
 first evaluating each inner computation and then evaluating the outer one. -/
 theorem eval_join (m : RandCostM ℕ (RandCostM ℕ ENNReal)) :
     eval (m >>= id) = eval (eval <$> m) := by
-  simp [eval, ecwp_bind, ecwp_map, Function.comp_def]
+  simp only [eval, ecwp_bind, id_eq, ecwp_map, CompTriple.comp_eq]
   change m.ecwp (fun a => a.ecwp id) =
     m.ecwp (fun a => a.ecwp id)
   rfl

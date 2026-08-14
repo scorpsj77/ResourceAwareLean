@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "ResourceAwareLean"
-version: 0.1.0-alpha
+version: 0.1.0
 license: Apache-2.0
 type: software
 abstract: >-
@@ -10,7 +10,7 @@ abstract: >-
   varying semantic and cost models, with proved model-independence, ordered
   operation traces, and asymptotic bounds.
 authors:
-  - name: "Jiyuan" # TODO: confirm full name (as recorded in git history)
-  - name: "Daya Kumaran" # TODO: confirm full name (as recorded in git history)
-  - name: "James Needham" # TODO: confirm full name (GitHub username in git history)
+  - name: "Jiyuan (Chai Yuen) Ji"
+  - name: "Daya Kumaran"
+  - name: "James Needham"
   - name: "Lechen Wang"

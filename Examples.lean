@@ -6,5 +6,8 @@ Authors: Jiyuan
 import Examples.BFS
 import Examples.DFS
 import Examples.Dijkstra
+import Examples.Graph
 import Examples.MergeSort
+import Examples.PriorityQueue
+import Examples.RandCostM
 import Examples.RandomizedQuicksort

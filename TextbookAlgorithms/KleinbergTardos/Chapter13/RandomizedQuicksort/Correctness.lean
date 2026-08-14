@@ -57,8 +57,9 @@ theorem partitionProgram_support_correct [LinearOrder alpha] (pivot : alpha) :
       subst answer
       rw [evalWith_bind] at hparts
       by_cases hle : value <= pivot
-      · simp [SemanticBackend.uniformLinearOrder,
-          Sorting.ComparisonBackend.linearOrder, hle] at hparts
+      · simp only [SemanticBackend.uniformLinearOrder,
+          Sorting.ComparisonBackend.linearOrder, hle, decide_true, ↓reduceIte,
+          evalWith_pure, PMF.mem_support_iff, ne_eq] at hparts
         obtain ⟨restParts, hrestParts, hparts⟩ :=
           (PMF.mem_support_bind_iff _ _ _).mp hparts
         rw [PMF.mem_support_pure_iff] at hparts
@@ -66,8 +67,10 @@ theorem partitionProgram_support_correct [LinearOrder alpha] (pivot : alpha) :
         have hrest := ih restParts hrestParts
         exact ⟨by simpa [PartitionCorrect] using And.intro hle hrest.1,
           hrest.2⟩
-      · simp [SemanticBackend.uniformLinearOrder,
-          Sorting.ComparisonBackend.linearOrder, hle] at hparts
+      · simp only [SemanticBackend.uniformLinearOrder,
+          Sorting.ComparisonBackend.linearOrder, hle, decide_false,
+          Bool.false_eq_true, ↓reduceIte, evalWith_pure, PMF.mem_support_iff,
+          ne_eq] at hparts
         obtain ⟨restParts, hrestParts, hparts⟩ :=
           (PMF.mem_support_bind_iff _ _ _).mp hparts
         rw [PMF.mem_support_pure_iff] at hparts
@@ -111,13 +114,14 @@ theorem compareSwap_support_correct [LinearOrder alpha]
     pair.1 <= pair.2 ∧ [pair.1, pair.2].Perm [left, right] := by
   rw [eval, evalWith_compareSwap, PMF.mem_support_pure_iff] at hpair
   by_cases hle : left <= right
-  · simp [SemanticBackend.uniformLinearOrder,
-      Sorting.ComparisonBackend.linearOrder, hle] at hpair
+  · simp only [SemanticBackend.uniformLinearOrder,
+      Sorting.ComparisonBackend.linearOrder, hle, decide_true, ↓reduceIte] at hpair
     subst pair
     exact ⟨hle, .refl _⟩
   · have hright : right <= left := le_of_not_ge hle
-    simp [SemanticBackend.uniformLinearOrder,
-      Sorting.ComparisonBackend.linearOrder, hle] at hpair
+    simp only [SemanticBackend.uniformLinearOrder,
+      Sorting.ComparisonBackend.linearOrder, hle, decide_false,
+      Bool.false_eq_true, ↓reduceIte] at hpair
     subst pair
     exact ⟨hright, List.Perm.swap _ _ []⟩
 

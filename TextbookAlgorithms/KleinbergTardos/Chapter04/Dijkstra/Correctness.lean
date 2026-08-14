@@ -63,11 +63,13 @@ structure QueueInvariant
     state.heap.contains name = true ↔ name ∉ state.settled
   settled_nodup : state.settled.Nodup
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 private theorem initialEntries_names (n : Nat) (source : Fin n) :
     ((Model.initialEntries Weight n source).map
       KleinbergPriorityQueue.Entry.name) = List.finRange n := by
   simp [Model.initialEntries, Function.comp_def]
 
+omit [CanonicallyOrderedAdd Weight] in
 theorem initializeState_success (n : Nat) (source : Fin n) :
     (Model.initializeState n Edge Weight source).1 = true := by
   apply KleinbergPriorityQueue.Heap.insertAll_eligible_success
@@ -76,12 +78,14 @@ theorem initializeState_success (n : Nat) (source : Fin n) :
   · simpa [initialEntries_names] using List.nodup_finRange n
   · simp [KleinbergPriorityQueue.Heap.startHeap, KleinbergPriorityQueue.Heap.contains]
 
+omit [CanonicallyOrderedAdd Weight] in
 private theorem initializeState_wellFormed (n : Nat) (source : Fin n) :
     (Model.initializeState n Edge Weight source).2.heap.WellFormed := by
   apply KleinbergPriorityQueue.Heap.insertAll_success_wellFormed
   · exact KleinbergPriorityQueue.Heap.startHeap_wellFormed n (Distance Weight)
   · exact initializeState_success (Edge := Edge) n source
 
+omit [CanonicallyOrderedAdd Weight] in
 private theorem initializeState_contents (n : Nat) (source name : Fin n) :
     (Model.initializeState n Edge Weight source).2.heap.contents name =
       some (if name = source then 0 else ⊤) := by
@@ -106,6 +110,7 @@ private theorem initializeState_contents (n : Nat) (source name : Fin n) :
       entry
       (by simp [entry, Model.initialEntries])
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- Successful initialization establishes a well-formed full queue and empty settled set. -/
 theorem initializeState_queueInvariant (n : Nat) (source : Fin n) :
     QueueInvariant (Model.initializeState n Edge Weight source).2 := by
@@ -121,6 +126,7 @@ theorem initializeState_queueInvariant (n : Nat) (source : Fin n) :
       exact ⟨_, initializeState_contents (Edge := Edge) n source name⟩
   · simp [Model.initializeState]
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- Initialization inserts all `n` dense names. -/
 theorem initializeState_heap_size (n : Nat) (source : Fin n) :
     (Model.initializeState n Edge Weight source).2.heap.H.size = n := by
@@ -435,6 +441,7 @@ def storedPredecessor (state : Model.State n Edge Weight) (name : Fin n) :
     Option (Predecessor n Edge Weight) :=
   state.predecessors[name.val]?.getD none
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Every indexed outgoing occurrence denotes the corresponding exact network arc. -/
 theorem indexedOutgoingEdges_sound
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -449,6 +456,7 @@ theorem indexedOutgoingEdges_sound
   rcases hmem with ⟨attached, _, rfl⟩
   simpa using model.weightedNeighborAccess.sound attached.property
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Every exact network arc appears in the indexed outgoing row of its encoded source. -/
 theorem indexedOutgoingEdges_complete
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -514,6 +522,7 @@ def castNetworkPathTarget
     NetworkPath model.edgeView graph source right :=
   h ▸ path
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 @[simp] theorem networkPathWeight_castNetworkPathTarget
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     {source left right : V} (h : left = right)
@@ -546,7 +555,8 @@ def HasPathWitness
       (index.decode source).val (index.decode name).val,
     RealizesDistance model graph index source name state path
 
-/-- The textbook conclusion for one settled name: its stored label is realized by a shortest path. -/
+/-- The textbook conclusion for one settled name: its stored label is realized by a shortest
+path. -/
 def SettledShortest
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     (index : VertexIndex model.base.interface model.base.vertexEnumeration graph)
@@ -606,7 +616,9 @@ inductive PredecessorReaches
         storedDistance state parent + (outgoing.weight : Distance Weight)) :
       PredecessorReaches model graph index source state outgoing.target
 
-/-- A certified predecessor chain denotes an exact occurrence-preserving path of the stored weight. -/
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
+/-- A certified predecessor chain denotes an exact occurrence-preserving path of the stored
+weight. -/
 theorem predecessorReaches_path
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     (index : VertexIndex model.base.interface model.base.vertexEnumeration graph)
@@ -634,6 +646,7 @@ theorem predecessorReaches_path
       rw [hdistance, ← hpath]
       simp [networkPathWeight, pathWeight, arc]
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- A predecessor chain for an unchanged name transports across one active-target update. -/
 theorem predecessorReaches_transport_other
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -678,6 +691,7 @@ theorem predecessorReaches_transport_other
           hdistanceOther parent hparentNe]
         exact hdistance
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Predecessor reconstruction transports when tables agree and settlement only grows. -/
 theorem predecessorReaches_transport_tables
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -744,6 +758,7 @@ def decodedSettledSet
   { vertex | ∃ hvertex : model.base.interface.IsVertex graph vertex,
       index.encode ⟨vertex, hvertex⟩ ∈ state.settled }
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 @[simp] theorem decode_mem_decodedSettledSet
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     (index : VertexIndex model.base.interface model.base.vertexEnumeration graph)
@@ -754,6 +769,7 @@ def decodedSettledSet
       name ∈ state.settled := by
   simp [decodedSettledSet]
 
+omit [AddCommMonoid Weight] [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Semantic reachability supplies an exact occurrence-preserving weighted network path. -/
 theorem reachable_has_networkPath
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -864,9 +880,7 @@ theorem rootLabel_le_path
       rw [haltWeight]
       apply le_add_of_nonneg_right
       apply WithTop.coe_le_coe.mpr
-      simpa using
-        (le_self_add (0 : Weight)
-          (networkPathWeight (Weight := Weight) model graph suffix))
+      simp
 
 /-- A reachable heap root is represented by a shortest path before it is settled. -/
 theorem root_settledShortest
@@ -984,6 +998,7 @@ theorem changeKey_predecessor_step_of_active
           exact hquery (Fin.ext heq)
         simp [storedPredecessor, Ne.symm hqueryVal]
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- Extend a realized source label along one indexed outgoing edge occurrence. -/
 theorem extend_pathWitness
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -1073,6 +1088,7 @@ structure ProcessOneFacts
     storedDistance after outgoing.target ≤
       storedDistance after settledName + (outgoing.weight : Distance Weight)
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 /-- A path witness transports across an unchanged distance-table cell. -/
 theorem hasPathWitness_of_distance_eq
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -1111,6 +1127,7 @@ private theorem extractMin_activeLabels
   rw [hafterDistance]
   exact hactiveLabels name hparts.2
 
+omit [LinearOrder Weight] [CanonicallyOrderedAdd Weight] in
 private theorem finiteWitness_of_distances_eq
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     (index : VertexIndex model.base.interface model.base.vertexEnumeration graph)
@@ -1272,7 +1289,8 @@ theorem processOne_facts
         rw [← hcurrent, ← hsourceDistance]
         exact le_of_not_gt himprove
 
-/-- One executable relaxation preserves recursive predecessor reconstruction for every finite label. -/
+/-- One executable relaxation preserves recursive predecessor reconstruction for every finite
+label. -/
 theorem processOne_predecessorWitness
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
     (index : VertexIndex model.base.interface model.base.vertexEnumeration graph)
@@ -1284,8 +1302,8 @@ theorem processOne_predecessorWitness
     (state : Model.State
       (model.base.vertexEnumeration.vertices graph).length Edge Weight)
     (hqueue : Operational.QueueInvariant state)
-    (hactiveLabels : ActiveLabelsAgree state)
-    (hfiniteWitness : ∀ name, storedDistance state name ≠ ⊤ →
+    (_hactiveLabels : ActiveLabelsAgree state)
+    (_hfiniteWitness : ∀ name, storedDistance state name ≠ ⊤ →
       HasPathWitness model graph index source name state)
     (hsourceSettled : source ∈ state.settled)
     (hsettledShortest : SettledShortest model graph index source settledName state)
@@ -1512,6 +1530,7 @@ theorem processEdges_facts
                 rw [hrest.settled_distance settledName hsettledAfter]
       · exact hrest.row_relaxed edge hedge hactive
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- A shortest-path certificate transports across an unchanged distance-table cell. -/
 theorem settledShortest_of_distance_eq
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
@@ -1851,6 +1870,7 @@ theorem dijkstraLoop_fullInvariant
 
 /-! ### Concrete initialization and end-to-end Claim (4.14) -/
 
+omit [CanonicallyOrderedAdd Weight] in
 @[simp] theorem initializeState_storedDistance
     (n : Nat) (source name : Fin n) :
     storedDistance (Model.initializeState n Edge Weight source).2 name =
@@ -1863,11 +1883,13 @@ theorem dijkstraLoop_fullInvariant
       exact hname (Fin.ext heq.symm)
     simp [storedDistance, Model.initializeState, hname, hvals]
 
+omit [CanonicallyOrderedAdd Weight] in
 @[simp] theorem initializeState_storedPredecessor
     (n : Nat) (source name : Fin n) :
     storedPredecessor (Model.initializeState n Edge Weight source).2 name = none := by
   simp [storedPredecessor, Model.initializeState]
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- Initialization's logical heap map contains exactly the advertised initial labels. -/
 theorem initializeState_heap_contents
     (n : Nat) (source name : Fin n) :
@@ -1875,6 +1897,7 @@ theorem initializeState_heap_contents
       some (if name = source then 0 else ⊤) := by
   exact Operational.initializeState_contents (Edge := Edge) n source name
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- Heap keys and the persistent distance table agree immediately after initialization. -/
 theorem initializeState_activeLabels (n : Nat) (source : Fin n) :
     ActiveLabelsAgree (Model.initializeState n Edge Weight source).2 := by
@@ -1899,8 +1922,7 @@ theorem initializeState_root (n : Nat) (source : Fin n) :
   have hrootLe : state.heap.H[0].key ≤ 0 :=
     heap_root_le_contents state.heap hwellFormed hne source 0 hsourceContents
   have hrootNonnegative : (0 : Distance Weight) ≤ state.heap.H[0].key := by
-    simpa using
-      (le_self_add (0 : Distance Weight) state.heap.H[0].key)
+    simp
   have hrootKey : state.heap.H[0].key = 0 :=
     le_antisymm hrootLe hrootNonnegative
   have hrootContents := heap_root_contents state.heap hwellFormed hne
@@ -1930,8 +1952,7 @@ theorem initializeState_source_shortest
   · unfold RealizesDistance
     simp [networkPathWeight, pathWeight]
   · intro alternative
-    simpa [pathWeight] using
-      (bot_le : (0 : Weight) ≤ pathWeight model.edgeView graph alternative)
+    simp [pathWeight]
 
 /-- Initialization followed by the first extraction and row scan establishes the loop invariant. -/
 theorem initialize_firstIteration_invariant
@@ -2022,12 +2043,10 @@ theorem initialize_firstIteration_invariant
   have hsourceWitness : HasPathWitness model graph index source source afterExtract := by
     apply hafterFinite source
     rw [hafterDistance]
-    simpa [initial] using
-      initializeState_storedDistance (Edge := Edge) (Weight := Weight) n source source
+    simp [initial]
   have hrowFacts := processEdges_facts model graph index source source 0 row afterExtract
     hafterQueue hafterActive hafterFinite (by simp [hafterSettledSource])
-    (by rw [hafterDistance]; simpa [initial] using
-      initializeState_storedDistance (Edge := Edge) (Weight := Weight) n source source)
+    (by rw [hafterDistance]; simp [initial])
     hsourceWitness (by intro outgoing houtgoing; exact houtgoing)
   change ProcessEdgesFacts model graph index source source 0 row afterExtract afterRow
     at hrowFacts
@@ -2113,7 +2132,7 @@ theorem initialize_firstIteration_fullInvariant
     hsourceShortestAfter.elim fun path hpath => ⟨path, hpath.1⟩
   have hsourceDistanceAfter : (0 : Distance Weight) = storedDistance afterExtract source := by
     rw [hafterDistance]
-    simpa [initial] using initializeState_storedDistance (Edge := Edge) n source source
+    simp [initial]
   have hrowFacts := processEdges_facts model graph index source source 0 row afterExtract
     hafterQueue hafterActive hafterFinite (by simp [hafterSettledSource])
     hsourceDistanceAfter
@@ -2391,6 +2410,7 @@ def PredecessorReconstructedShortest
       RealizesDistance model graph index source name state path →
         IsShortestPath model.edgeView graph path
 
+omit [CanonicallyOrderedAdd Weight] in
 /-- Extract the concrete shortest path denoted by a predecessor-reconstruction certificate. -/
 theorem predecessorReconstructedShortest_path
     (model : WeightedResourceModel G V Edge Weight) (graph : G)
