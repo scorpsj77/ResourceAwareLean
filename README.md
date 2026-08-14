@@ -49,12 +49,12 @@ All libraries build without `sorry`, `admit`, or custom axioms.
 | --- | --- |
 | Semantics/cost separation with a proved independence theorem (`ResourceAware.Program.mapEvents_runFrom_eq`: changing only the cost model preserves the result, the final state, and the erased operation trace) | Proved |
 | Erasure and reweighting: operation profiles as reusable proof objects (`ResourceAware.Program.weightedOperationCost_eq_of_operationTrace_eq`, `ResourceAware.Program.exactCost_le_weightedOperationCost`) | Proved |
-| BFS and DFS: execution-linked reachability with representation-sensitive cost models (the same program under adjacency-list and adjacency-matrix models) | Proved |
-| Dijkstra: execution-linked shortest paths for reachable enumerated vertices over canonically nonnegative ordered additive weights, with adjacency-list and heap cost models | Proved, with the stated restrictions |
-| Exact modeled cost carried through to Mathlib `IsBigO` bounds (MergeSort bound stated on powers of two; representation-cost bounds for both graph models) | Proved, with the stated restrictions |
-| MergeSort as introductory case study: correctness and exact/weighted cost under two cost models | Proved |
-| Randomized Quicksort: sorted-permutation correctness and expected-cost bounds for duplicate-free inputs under the documented probabilistic cost models | Proved, with the stated restrictions |
-| Executable examples that actually run (`#eval` demonstrations under `lake env lean`) | Working |
+| Exact modeled costs connected to Mathlib `IsBigO` bounds across all five algorithm case studies | Proved |
+| MergeSort: execution-linked sorted-permutation correctness and exact-cost bounds under bounded comparison and structural cost models, with the asymptotic theorem stated for power-of-two input sizes following the textbook convention | Proved |
+| BFS and DFS: execution-linked reachability and exact-cost bounds under adjacency-list and adjacency-matrix models | Proved |
+| Dijkstra: execution-linked shortest paths over nonnegative weights, with an `O((m+n) log(n+1))` heap bound and an `O(m log n)` corollary for reachable adjacency-list inputs with `n ≥ 2` | Proved |
+| Randomized Quicksort: execution-linked sorted-permutation correctness and expected-cost bounds under uniform pivot selection for comparison-only and unit textbook cost models | Proved |
+| Executable and theorem-backed examples (`#eval`, `#guard`, and `example`) checked with `lake env lean` | Working |
 
 ## Get started
 
@@ -126,15 +126,15 @@ upstream contributions.
 
 ## Related work
 
-### AlgoLean
+### Algolean
 
-[AlgoLean](https://github.com/Shreyas4991/Algolean) is a standalone Lean
+[Algolean](https://github.com/Shreyas4991/Algolean) is a standalone Lean
 package for algorithm complexity built on the same CSLib foundations, and is a
 complementary design point. Both projects write algorithms as programs over an
 operation signature with explicit primitive costs and derive complexity
 structurally. This project's emphasis is on separating semantics from cost
 models with a proved independence theorem and on ordered measured traces with
-erasure and reweighting; AlgoLean covers ground this project does not, including
+erasure and reweighting; Algolean covers ground this project does not, including
 comparison-sort lower bounds, circuits, and Turing-machine models.
 
 ### References
